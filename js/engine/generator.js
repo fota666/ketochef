@@ -219,7 +219,11 @@ export function swapOptions(recipe, itemIndex, db) {
   const used = new Set(recipe.items.map((i) => i.id));
   const slot = t?.slots.find((s) => s.key === it.slot);
   if (!slot) return [];
-  return slot.options.filter((id) => id === it.id || (!used.has(id) && db[id]));
+  // Zsírszázalék-változatok (darált marha, darált sertés) mindig cserélhetők egymásra
+  const family = (id) => id.replace(/\d+$/, '');
+  const variants = Object.keys(db).filter((id) => /\d+$/.test(id) && slot.options.some((o) => family(o) === family(id)));
+  const opts = [...new Set([...slot.options, ...variants])];
+  return opts.filter((id) => id === it.id || (!used.has(id) && db[id]));
 }
 
 /** Egész nap generálása változatossággal. */

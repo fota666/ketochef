@@ -4,7 +4,7 @@ import { INGREDIENTS, BY_ID } from '../js/data/ingredients.js';
 import { TEMPLATES } from '../js/data/templates.js';
 import { sumNutrition, ratiosOf, validate, gramTargets, ratioBands, relativeDeviation, DEFAULT_TARGET } from '../js/engine/macros.js';
 import { optimize } from '../js/engine/optimizer.js';
-import { generateOptions, generateDay, reoptimize, mulberry32, renderSteps, matchingTemplates } from '../js/engine/generator.js';
+import { generateOptions, generateDay, reoptimize, mulberry32, renderSteps, matchingTemplates, swapOptions } from '../js/engine/generator.js';
 
 const db = BY_ID;
 
@@ -258,4 +258,17 @@ test('paprikás csirke: a fűszerpaprika is számít a makróba', () => {
     assert.ok(p && p.g >= 3);
     assert.equal(validate(o.items, db, 675).status, 'PASS');
   }
+});
+
+test('darált sertés alapból 20%, a 10% és 15% cserével elérhető', () => {
+  const rng = mulberry32(12);
+  for (let k = 0; k < 15; k++) {
+    const { options } = generateOptions({ mealType: 'foetel', kcal: 675, count: 3, db, rng });
+    for (const o of options) assert.ok(!o.items.some((x) => x.id === 'sertes10' || x.id === 'sertes15'));
+  }
+  const { options } = generateOptions({ mealType: 'foetel', kcal: 675, mustInclude: ['sertes20'], count: 1, db, rng: mulberry32(2) });
+  const r = options[0];
+  const idx = r.items.findIndex((x) => x.id === 'sertes20');
+  const sw = swapOptions(r, idx, db);
+  assert.ok(sw.includes('sertes10') && sw.includes('sertes15') && sw.includes('sertes20'));
 });

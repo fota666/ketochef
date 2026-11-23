@@ -18,7 +18,8 @@ export const MEALS = {
 };
 
 const FEH_SZARNYAS = ['csirkecomb', 'csirkemell'];
-const DARALT = ['marha10', 'marha15', 'marha20', 'sertes10', 'sertes15', 'sertes20'];
+// Darált sertés alapból 20% zsír, a többi változat cserével elérhető
+const DARALT = ['marha10', 'marha15', 'marha20', 'sertes20'];
 
 export const TEMPLATES = [
   {
@@ -26,7 +27,7 @@ export const TEMPLATES = [
     name: 'Fokhagymás-gyömbéres wok',
     cuisine: 'azsiai', meals: ['foetel'], method: 'Wok', time: 20,
     slots: [
-      { key: 'feh', label: 'Fehérje', pick: [1, 1], options: [...FEH_SZARNYAS, 'tarja', 'steak', 'marha10', 'sertes10', 'garnela'] },
+      { key: 'feh', label: 'Fehérje', pick: [1, 1], options: [...FEH_SZARNYAS, 'tarja', 'steak', 'marha10', 'sertes20', 'garnela'] },
       { key: 'zold', label: 'Zöldség', pick: [2, 2], options: ['brokkoli', 'pakchoi', 'gomba', 'paprika', 'cukkini', 'zoldbab', 'kaposzta', 'karfiol', 'spenot'] },
       { key: 'zsir', label: 'Zsiradék', pick: [1, 1], options: ['szezamolaj'] },
       { key: 'extra', label: 'Feltét', pick: [1, 2], options: ['foldimogyoro', 'szezammag', 'ujhagyma', 'chili', 'mandula', 'tahini'] },
@@ -358,7 +359,7 @@ export const TEMPLATES = [
     name: 'Keto padlizsános parmigiana',
     cuisine: 'olasz', meals: ['foetel'], method: 'Sütő', time: 45,
     slots: [
-      { key: 'feh', label: 'Fehérje', pick: [1, 1], options: ['marha10', 'marha15', 'sertes15', 'turo'] },
+      { key: 'feh', label: 'Fehérje', pick: [1, 1], options: ['marha10', 'marha15', 'sertes20', 'turo'] },
       { key: 'zold', label: 'Zöldség', pick: [1, 1], options: ['padlizsan', 'cukkini'] },
       { key: 'zsir', label: 'Olaj', pick: [1, 1], options: ['olivaolaj'] },
     ],
