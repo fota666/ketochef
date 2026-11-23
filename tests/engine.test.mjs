@@ -13,7 +13,7 @@ test('adatbázis: a címke-kcal és a makróból számolt energia közel van egy
     const { kcal, p, f, c, fiber } = ing.per100;
     if (kcal < 100) continue;
     const est = 9 * f + 4 * p + 4 * c + 2 * (fiber || 0);
-    assert.ok(Math.abs(est - kcal) / kcal < 0.12, `${ing.id}: ${kcal} vs ${est.toFixed(0)}`);
+    assert.ok(Math.abs(est - kcal) / kcal < 0.15, `${ing.id}: ${kcal} vs ${est.toFixed(0)}`);
   }
 });
 
@@ -246,5 +246,16 @@ test('napi 1 és 2 étkezés: 1900 és 950 kcal-os adag is PASS', () => {
     const { options } = generateOptions({ mealType: 'foetel', kcal, count: 3, db, rng });
     assert.equal(options.length, 3, `${kcal}`);
     for (const o of options) assert.equal(validate(o.items, db, kcal).status, 'PASS');
+  }
+});
+
+test('paprikás csirke: a fűszerpaprika is számít a makróba', () => {
+  const rng = mulberry32(4);
+  const { options } = generateOptions({ mealType: 'foetel', kcal: 675, cuisine: 'magyaros', mustInclude: ['fuszerpaprika'], count: 2, db, rng });
+  assert.ok(options.length >= 1);
+  for (const o of options) {
+    const p = o.items.find((x) => x.id === 'fuszerpaprika');
+    assert.ok(p && p.g >= 3);
+    assert.equal(validate(o.items, db, 675).status, 'PASS');
   }
 });

@@ -136,6 +136,7 @@ export const INGREDIENTS = [
   I('ecet', 'Borecet / almaecet', 'szosz', 21, 0, 0, 0.9, 0, 'ref', USDA, [0, 10, 20], 7, { step: 1 }),
   I('kapribogyo', 'Kapribogyó', 'szosz', 23, 2.4, 0.9, 1.7, 3.2, 'ref', USDA, [0, 10, 20], 4, { step: 1 }),
   I('paradicsompure', 'Paradicsompüré (sűrített)', 'szosz', 82, 4.3, 0.5, 14.8, 4.1, 'ref', USDA, [0, 15, 30], 8, { step: 1 }),
+  I('fuszerpaprika', 'Fűszerpaprika, őrölt', 'szosz', 282, 14.1, 12.9, 19.1, 34.9, 'ref', USDA, [0, 3, 8], 9, { step: 1 }),
   I('passata', 'Passata', 'szosz', 32, 1.6, 0.2, 5.5, 1.5, 'becsült', CIMKE, [50, 100, 180], 8, { step: 10 }),
 ];
 
