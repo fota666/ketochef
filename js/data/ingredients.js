@@ -124,6 +124,7 @@ export const INGREDIENTS = [
   I('lenmag', 'Lenmag', 'mag', 534, 18.3, 42.2, 1.6, 27.3, 'ref', USDA, [5, 10, 20], 6, { step: 1 }),
   I('szezammag', 'Szezámmag', 'mag', 573, 17.7, 49.7, 11.6, 11.8, 'ref', USDA, [3, 8, 15], 8, { step: 1 }),
   I('foldimogyoro', 'Földimogyoró, pörkölt', 'mag', 567, 25.8, 49.2, 7.6, 8.5, 'ref', USDA, [5, 20, 35], 7, { step: 1 }),
+  I('mandulaliszt', 'Mandulaliszt (blansírozott)', 'mag', 571, 21.4, 50.0, 10.7, 10.7, 'ref', USDA + ' almond flour', [10, 25, 40], 8, { step: 1 }),
   I('tahini', 'Tahini', 'mag', 595, 17.0, 53.8, 11.9, 9.3, 'ref', USDA, [5, 15, 30], 10, { step: 1 }),
   I('etcsoki', 'Étcsokoládé 85%', 'mag', 584, 12.5, 46.0, 19.0, 0, 'becsült', CIMKE, [0, 10, 20], 10, { step: 1 }),
 

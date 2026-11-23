@@ -438,7 +438,7 @@ export const TEMPLATES = [
   },
   {
     id: 'turos-palacsinta',
-    name: 'Túrós-tojásos keto palacsinta málnával',
+    name: 'Túrós keto palacsinta málnával',
     cuisine: 'klasszikus', meals: ['reggeli'], method: 'Serpenyő', time: 20,
     slots: [
       { key: 'feh', label: 'Túró', pick: [1, 1], options: ['turo'] },
@@ -446,12 +446,12 @@ export const TEMPLATES = [
       { key: 'mag', label: 'Magvak', pick: [0, 1], options: ['dio', 'mandula', 'mogyoro', 'pisztacia', 'lenmag'] },
       { key: 'extra', label: 'Extra', pick: [0, 1], options: ['etcsoki'] },
     ],
-    fixed: [{ id: 'tojas' }, { id: 'vaj' }, { id: 'malna' }],
-    ranges: { turo: [80, 120, 180], tojas: [100, 150, 200], vaj: [5, 12, 20], malna: [20, 30, 50], tejszin: [20, 30, 60], gorogjoghurt: [40, 60, 100], etcsoki: [0, 8, 12] },
-    spices: 'eritrit vagy stevia, vanília, csipet só',
+    fixed: [{ id: 'tojas' }, { id: 'mandulaliszt' }, { id: 'vaj' }, { id: 'malna' }],
+    ranges: { mandulaliszt: [15, 25, 35], turo: [80, 120, 180], tojas: [100, 150, 200], vaj: [5, 12, 20], malna: [20, 30, 50], tejszin: [20, 30, 60], gorogjoghurt: [40, 60, 100], etcsoki: [0, 8, 12] },
+    spices: 'eritrit vagy stevia, vanília, csipet só, fél tk sütőpor',
     steps: [
-      'Turmixold simára a túrót a tojásokkal, egy csipet sóval és édesítővel.',
-      'A vajon, közepes lángon süss belőle 3-4 kis, vastagabb palacsintát, oldalanként 2-3 percig.',
+      'Turmixold simára a túrót a tojásokkal, keverd bele a mandulalisztet, a sütőport, a sót és az édesítőt. Pihentesd 5 percig, hogy besűrűsödjön.',
+      'Tapadásmentes serpenyőben, kevés vajon, alacsony-közepes lángon süss belőle 4-5 kis, tenyérnyi palacsintát. Fedő alatt 2-3 percig süsd, amíg a teteje megköt, csak utána fordítsd.',
       'Tálald a krémmel ({zsir}) és a málnával.',
       'Szórd meg pirított magvakkal ({mag}).',
       'Reszelj rá csokoládét ({extra}).',
