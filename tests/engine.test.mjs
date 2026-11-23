@@ -229,3 +229,22 @@ test('receptkeret-szűrés konyhára és étkezésre', () => {
   assert.ok(matchingTemplates({ mealType: 'reggeli' }).every((t) => t.meals.includes('reggeli')));
   assert.ok(matchingTemplates({ cuisine: 'magyaros' }).every((t) => t.cuisine === 'magyaros'));
 });
+
+test('étkezés-hozzárendelés: templateOk felülírja a reggeli/főétel típust', () => {
+  const rng = mulberry32(31);
+  const ok = (t) => t.id === 'smash-tal';
+  const { options } = generateOptions({ mealType: 'reggeli', kcal: 550, templateOk: ok, count: 2, db, rng });
+  assert.ok(options.length >= 1);
+  for (const o of options) assert.equal(o.templateId, 'smash-tal');
+  const day = generateDay({ meals: [{ type: 'reggeli', kcal: 550, templateOk: (t) => t.id === 'bolognai' }], db, rng });
+  assert.equal(day[0].templateId, 'bolognai');
+});
+
+test('napi 1 és 2 étkezés: 1900 és 950 kcal-os adag is PASS', () => {
+  const rng = mulberry32(55);
+  for (const kcal of [950, 1900]) {
+    const { options } = generateOptions({ mealType: 'foetel', kcal, count: 3, db, rng });
+    assert.equal(options.length, 3, `${kcal}`);
+    for (const o of options) assert.equal(validate(o.items, db, kcal).status, 'PASS');
+  }
+});

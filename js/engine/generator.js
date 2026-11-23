@@ -39,9 +39,10 @@ export function templateIngredientIds(t) {
   return new Set([...t.fixed.map((f) => f.id), ...t.slots.flatMap((s) => s.options)]);
 }
 
-export function matchingTemplates({ mealType, cuisine, mustInclude = [], exclude = [] }) {
+export function matchingTemplates({ mealType, cuisine, mustInclude = [], exclude = [], templateOk = null }) {
   return TEMPLATES.filter((t) => {
-    if (mealType && !t.meals.includes(mealType)) return false;
+    if (templateOk) { if (!templateOk(t)) return false; }
+    else if (mealType && !t.meals.includes(mealType)) return false;
     if (cuisine && t.cuisine !== cuisine) return false;
     const ids = templateIngredientIds(t);
     if (!mustInclude.every((id) => ids.has(id))) return false;
@@ -81,10 +82,18 @@ export function fillTemplate(t, { mustInclude = [], exclude = [], rng, db, avoid
   return items;
 }
 
-export function specFor(t, items, db) {
+// Nagy adagnál (pl. napi 1-2 étkezés) a keret tartományai arányosan nőnek.
+export function rangeScale(t, kcal) {
+  const base = t?.meals?.includes('foetel') ? 675 : 550;
+  const f = kcal / base;
+  return f > 1.15 ? f : 1;
+}
+
+export function specFor(t, items, db, scale = 1) {
   return items.map((it) => {
     const ing = db[it.id];
-    const range = t?.ranges?.[it.id] || ing.range;
+    const r0 = t?.ranges?.[it.id] || ing.range;
+    const range = scale === 1 ? r0 : r0.map((x) => x * scale);
     return { id: it.id, slot: it.slot, range, step: ing.step, locked: it.locked, g: it.g };
   });
 }
@@ -126,9 +135,9 @@ export function buildRecipe(t, result, { mealType, kcal }) {
  * opts: { mealType, kcal, cuisine?, mustInclude?, exclude?, count=3, rng, db, target, avoid? }
  */
 export function generateOptions(opts) {
-  const { mealType, kcal, cuisine = null, mustInclude = [], exclude = [], count = 3, db, target = DEFAULT_TARGET, avoid = [], avoidTemplates = [] } = opts;
+  const { mealType, kcal, cuisine = null, mustInclude = [], exclude = [], count = 3, db, target = DEFAULT_TARGET, avoid = [], avoidTemplates = [], templateOk = null } = opts;
   const rng = opts.rng || Math.random;
-  const templates = matchingTemplates({ mealType, cuisine, mustInclude, exclude });
+  const templates = matchingTemplates({ mealType, cuisine, mustInclude, exclude, templateOk });
   if (!templates.length) return { options: [], reason: 'Nincs olyan receptkeret, amibe ezek a feltételek beleférnek.' };
 
   const out = [];
@@ -150,7 +159,7 @@ export function generateOptions(opts) {
     const sig = t.id + ':' + items.map((i) => i.id).sort().join(',');
     if (seen.has(sig)) continue;
     seen.add(sig);
-    const result = optimize(specFor(t, items, db), db, kcal, target);
+    const result = optimize(specFor(t, items, db, rangeScale(t, kcal)), db, kcal, target);
     if (result.status !== 'PASS') {
       infeasible++;
       continue;
@@ -171,7 +180,7 @@ export function generateOptions(opts) {
 /** Meglévő recept grammjainak újraoptimalizálása. A zárolt tételek grammja marad. */
 export function reoptimize(recipe, db, target = DEFAULT_TARGET) {
   const t = TEMPLATE_BY_ID[recipe.templateId];
-  const spec = specFor(t, recipe.items, db);
+  const spec = specFor(t, recipe.items, db, rangeScale(t, recipe.kcalTarget));
   const result = optimize(spec, db, recipe.kcalTarget, target);
   return {
     ...result,
@@ -219,7 +228,7 @@ export function generateDay({ meals, db, target = DEFAULT_TARGET, rng = Math.ran
   const avoid = [];
   const avoidTemplates = [];
   for (const meal of meals) {
-    const { options } = generateOptions({ mealType: meal.type, kcal: meal.kcal, count: 1, db, target, rng, avoid, avoidTemplates, exclude });
+    const { options } = generateOptions({ mealType: meal.type, kcal: meal.kcal, templateOk: meal.templateOk, count: 1, db, target, rng, avoid, avoidTemplates, exclude });
     const r = options[0] || null;
     recipes.push(r);
     if (r) {

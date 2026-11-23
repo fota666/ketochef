@@ -260,3 +260,28 @@ details.sources summary { cursor: pointer; font-weight: 600; color: var(--ink-2)
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 .meals > *, .results > *, .meal-head, .meal-foot { min-width: 0; }
 .meal, .result { overflow: hidden; }
+
+/* Naptár */
+.cal { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 6 * 4px) / 7); gap: 4px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 4px 0 18px; scrollbar-width: none; }
+.cal::-webkit-scrollbar { display: none; }
+.cal-day { scroll-snap-align: start; border: 1px solid var(--line); background: var(--bg); padding: 8px 0 7px; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; }
+.cal-day.today .cal-wd { color: var(--ink); font-weight: 700; }
+.cal-day.sel { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.cal-day.sel .cal-wd { color: var(--bg); }
+.cal-wd { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.cal-n { font-size: 18px; font-weight: 700; line-height: 1.1; }
+.cal-mark { display: flex; gap: 2px; height: 10px; align-items: center; }
+.cal-mark i { width: 5px; height: 5px; background: var(--line); display: block; }
+.cal-mark i.on { background: var(--carb); }
+.cal-day.sel .cal-mark i:not(.on) { background: #555; }
+.cal-mark.fast { font-size: 10px; font-weight: 700; color: var(--fail); }
+.day-head { align-items: center; }
+.day-tools { display: flex; gap: 8px; align-items: center; }
+.seg.mini { grid-auto-columns: 40px; }
+.seg.mini button { padding: 6px 0; font-size: 13.5px; min-height: 34px; }
+.fast-block { border: 1px solid var(--line); padding: 28px 18px; text-align: center; }
+.mehet { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
+.mehet .eyebrow { margin-right: 4px; }
+.tog { border: 1px solid var(--line); background: var(--bg); padding: 6px 10px; font-size: 13.5px; font-weight: 600; min-height: 34px; }
+.tog.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+@media (min-width: 820px) { .cal { grid-auto-columns: calc((100% - 13 * 4px) / 14); } }

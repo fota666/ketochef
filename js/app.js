@@ -21,6 +21,9 @@ const DEFAULT_STATE = {
   favorites: [],
   overrides: {},
   shopChecked: {},
+  fast: {},
+  dayCount: {},
+  templateMealKeys: {},
 };
 
 function load() {
@@ -126,32 +129,87 @@ window.addEventListener('hashchange', () => {
 // ---------- Menü ----------
 function dayRecipes(date) {
   const d = state.days[date] || [];
-  return state.settings.meals.map((_, i) => d[i] || null);
+  return dayMeals(date).map((_, i) => d[i] || null);
+}
+
+const isFast = (date) => !!state.fast?.[date];
+const WD = ['V', 'H', 'K', 'Sze', 'Cs', 'P', 'Szo'];
+const KEYS = ['reggeli', 'ebed', 'vacsora'];
+const round25 = (x) => Math.round(x / 25) * 25;
+
+// Egy nap étkezései: 3 (beállítás szerint), 2 (ebéd, vacsora) vagy 1 (egy nagy étkezés). A napi kalória ugyanannyi.
+function dayMeals(date) {
+  const base = state.settings.meals;
+  const total = base.reduce((a, m) => a + Number(m.kcal), 0);
+  const n = state.dayCount?.[date] ?? 3;
+  if (n === 1) return [{ name: 'Étkezés', key: 'egy', type: 'foetel', kcal: total, accept: ['ebed', 'vacsora'] }];
+  if (n === 2) {
+    const a = round25(total / 2);
+    return [
+      { name: 'Ebéd', key: 'ebed', type: 'foetel', kcal: a, accept: ['ebed'] },
+      { name: 'Vacsora', key: 'vacsora', type: 'foetel', kcal: total - a, accept: ['vacsora'] },
+    ];
+  }
+  return base.map((m, i) => ({ ...m, kcal: Number(m.kcal), key: KEYS[i], accept: [KEYS[i]] }));
+}
+
+// Melyik étkezésre mehet egy receptkeret: saját beállítás, alapból a keret típusa szerint
+function mealsFor(t) {
+  const own = state.templateMealKeys?.[t.id];
+  if (own) return own;
+  const out = [];
+  if (t.meals.includes('reggeli')) out.push('reggeli');
+  if (t.meals.includes('foetel')) out.push('ebed', 'vacsora');
+  return out;
+}
+const templateOkFor = (meal) => (t) => mealsFor(t).some((k) => meal.accept.includes(k));
+
+function fillDay(date, keepExisting) {
+  const meals = dayMeals(date).map((m) => ({ type: m.type, kcal: m.kcal, templateOk: templateOkFor(m) }));
+  const fresh = generateDay({ meals, db, target: target(), exclude: state.settings.exclude });
+  const cur = dayRecipes(date);
+  state.days[date] = cur.map((r, k) => (keepExisting && r ? r : fresh[k]));
+}
+
+function calendarStrip() {
+  const days = Array.from({ length: 14 }, (_, k) => addDays(todayIso(), k));
+  return `<nav class="cal" aria-label="Napok">${days.map((ds) => {
+    const d = new Date(ds + 'T12:00:00');
+    const rec = dayRecipes(ds);
+    const n = rec.filter(Boolean).length;
+    const mark = isFast(ds) ? '<span class="cal-mark fast">B</span>' : `<span class="cal-mark">${rec.map((_, k) => `<i class="${k < n ? 'on' : ''}"></i>`).join('')}</span>`;
+    return `<button class="cal-day ${ds === ui.date ? 'sel' : ''} ${ds === todayIso() ? 'today' : ''}" data-act="pick-day" data-d="${ds}">
+      <span class="cal-wd">${WD[d.getDay()]}</span><span class="cal-n num">${d.getDate()}</span>${mark}</button>`;
+  }).join('')}</nav>`;
 }
 
 function viewMenu() {
   const date = ui.date;
   const d = new Date(date + 'T12:00:00');
   const weekday = d.toLocaleDateString('hu-HU', { weekday: 'long' });
-  const rel = date === todayIso() ? 'Ma' : date === addDays(todayIso(), 1) ? 'Holnap' : date === addDays(todayIso(), -1) ? 'Tegnap' : null;
+  const rel = date === todayIso() ? 'Ma' : date === addDays(todayIso(), 1) ? 'Holnap' : null;
+  const fast = isFast(date);
+  const meals = dayMeals(date);
   const recipes = dayRecipes(date);
   const total = sumNutrition(recipes.filter(Boolean).flatMap((r) => r.items), db);
-  const dayKcal = state.settings.meals.reduce((s, m) => s + Number(m.kcal), 0);
+  const dayKcal = meals.reduce((s, m) => s + m.kcal, 0);
   const tg = gramTargets(dayKcal, state.settings.ratios);
   const meter = (k, label, val, tgt, unit = 'g') => `<div class="meter"><div class="lbl">${label}</div><div class="val num"><b>${k === 'c' ? n1(val) : n0(val)}</b> / ${n0(tgt)} ${unit}</div>
     <div class="track"><div class="fill" style="width:${Math.min(100, (val / tgt) * 100)}%;background:var(--${k === 'f' ? 'fat' : k === 'p' ? 'protein' : 'carb'})"></div></div></div>`;
   const filled = recipes.filter(Boolean).length;
+  const count = state.dayCount?.[date] ?? 3;
 
   return `
+  ${calendarStrip()}
   <div class="day-head">
     <div><h1>${esc(rel || capital(weekday))}</h1><div class="date">${esc(rel ? capital(weekday) + ', ' : '')}${esc(d.toLocaleDateString('hu-HU', { month: 'long', day: 'numeric' }))}</div></div>
-    <div class="day-nav">
-      <button class="icon-btn" data-act="day-prev" aria-label="Előző nap">‹</button>
-      ${date !== todayIso() ? `<button class="btn sm" data-act="day-today">Ma</button>` : ''}
-      <button class="icon-btn" data-act="day-next" aria-label="Következő nap">›</button>
+    <div class="day-tools">
+      ${fast ? '' : `<div class="seg mini" role="group" aria-label="Étkezések száma">${[1, 2, 3].map((n) => `<button data-act="day-count" data-n="${n}" class="${n === count ? 'on' : ''}" aria-label="${n} étkezés">${n}×</button>`).join('')}</div>`}
+      <button class="btn sm ${fast ? 'primary' : ''}" data-act="toggle-fast" aria-pressed="${fast}">${fast ? '✓ Böjt' : 'Böjt'}</button>
     </div>
   </div>
 
+  ${fast ? `<section class="fast-block"><div class="big-kcal num">0<small>kcal</small></div><div class="muted">Böjtnap</div></section>` : `
   <section class="summary" aria-label="Napi összesítő">
     <div class="summary-top">
       <div class="big-kcal num">${n0(total.kcal)}<small>/ ${n0(dayKcal)} kcal</small></div>
@@ -166,11 +224,12 @@ function viewMenu() {
 
   <section class="meals">
     ${recipes.map((r, i) => mealCard(r, i)).join('')}
-  </section>
+  </section>`}
 
   <div class="day-actions">
-    ${filled < recipes.length ? `<button class="btn primary" data-act="fill-day">${filled ? 'Kitöltés' : 'Nap generálása'}</button>` : ''}
-    ${filled ? `<button class="btn" data-act="regen-day">↻ Új nap</button>` : ''}
+    ${!fast && filled < recipes.length ? `<button class="btn primary" data-act="fill-day">${filled ? 'Nap kitöltése' : 'Nap generálása'}</button>` : ''}
+    ${!fast && filled ? `<button class="btn" data-act="regen-day">↻ Új nap</button>` : ''}
+    <button class="btn" data-act="fill-week">Hét kitöltése</button>
   </div>`;
 }
 
@@ -189,7 +248,7 @@ function mainIngredients(r) {
 const capital = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 function mealCard(r, i) {
-  const meal = state.settings.meals[i];
+  const meal = dayMeals(ui.date)[i];
   if (!r) {
     return `<div class="meal empty"><div><div class="eyebrow">${esc(meal.name)}</div><div class="muted">${n0(meal.kcal)} kcal</div></div>
       <button class="btn sm" data-act="gen-for" data-i="${i}">+ Recept</button></div>`;
@@ -209,12 +268,13 @@ function mealCard(r, i) {
 }
 
 // ---------- Generátor ----------
-function genMeal() { return state.settings.meals[ui.gen.mealIdx]; }
+function genMeal() { const m = dayMeals(ui.date); return m[Math.min(ui.gen.mealIdx, m.length - 1)]; }
 function genKcal() { return Number(ui.gen.kcal) || Number(genMeal().kcal); }
 
 function viewGen() {
   const g = ui.gen;
-  const meals = state.settings.meals;
+  const meals = dayMeals(ui.date);
+  if (g.mealIdx >= meals.length) g.mealIdx = meals.length - 1;
   const dateLabel = ui.date === todayIso() ? 'mai' : ui.date === addDays(todayIso(), 1) ? 'holnapi' : new Date(ui.date + 'T12:00:00').toLocaleDateString('hu-HU', { month: 'short', day: 'numeric' }) + '-i';
   return `
   <h1 class="page-title">Recept</h1>
@@ -280,7 +340,7 @@ function runGenerate() {
   const g = ui.gen;
   const meal = genMeal();
   const res = generateOptions({
-    mealType: meal.type, kcal: genKcal(), cuisine: g.cuisine, mustInclude: g.must,
+    mealType: meal.type, templateOk: templateOkFor(meal), kcal: genKcal(), cuisine: g.cuisine, mustInclude: g.must,
     exclude: [...new Set([...g.exclude, ...state.settings.exclude])], count: 3, db, target: target(),
   });
   g.results = res.options.length ? res.options : null;
@@ -350,10 +410,11 @@ function renderSheet() {
       <button class="icon-btn" data-act="sheet-fav" aria-label="Kedvenc">${isFav ? '★' : '☆'}</button>
     </div>
     <div class="sheet-body">
-      <div class="eyebrow">${esc(CUISINES[r.cuisine] || '')}${inMenu ? ' · ' + esc(state.settings.meals[s.mealIdx]?.name || '') : ''}</div>
+      <div class="eyebrow">${esc(CUISINES[r.cuisine] || '')}${inMenu ? ' · ' + esc(dayMeals(s.date)[s.mealIdx]?.name || '') : ''}</div>
       <h1 class="recipe-title">${esc(r.name)}</h1>
       <p class="subtitle lg">${esc(subtitle(r))}</p>
       <div class="recipe-meta"><span>${r.time} perc</span><span>${esc(r.method)}</span><span>Ízlés ${n1(tasteOf(r))}</span></div>
+      ${t ? `<div class="mehet"><span class="eyebrow">Mehet</span>${KEYS.map((k, j) => { const on = mealsFor(t).includes(k); return `<button class="tog ${on ? 'on' : ''}" data-act="meal-ok" data-k="${k}" aria-pressed="${on}">${on ? '✓ ' : ''}${esc(['Reggeli', 'Ebéd', 'Vacsora'][j])}</button>`; }).join('')}</div>` : ''}
 
       <section class="nutri" id="nutri">${nutriHtml(v, r)}</section>
 
@@ -449,7 +510,7 @@ function addToMenu(recipe, mealIdx = ui.gen.mealIdx, date = ui.date) {
   const r = structuredClone(recipe);
   (state.days[date] ||= [])[mealIdx] = r;
   save();
-  const label = state.settings.meals[mealIdx].name;
+  const label = dayMeals(date)[mealIdx]?.name || '';
   toast(`${label}: ${r.name}`);
 }
 
@@ -460,7 +521,7 @@ function viewShop() {
   const dates = Array.from({ length: len }, (_, i) => addDays(todayIso(), start + i));
   const sums = {};
   let meals = 0;
-  for (const d of dates) for (const r of dayRecipes(d)) if (r) { meals++; for (const it of r.items) if (it.g > 0) sums[it.id] = (sums[it.id] || 0) + it.g; }
+  for (const d of dates) if (!isFast(d)) for (const r of dayRecipes(d)) if (r) { meals++; for (const it of r.items) if (it.g > 0) sums[it.id] = (sums[it.id] || 0) + it.g; }
   const groups = {};
   for (const [id, g] of Object.entries(sums)) (groups[db[id]?.cat || 'egyeb'] ||= []).push({ id, g });
   const key = (id) => `${ui.shopRange}:${dates[0]}:${id}`;
@@ -536,27 +597,41 @@ document.addEventListener('click', (e) => {
   const act = el.dataset.act;
   const i = Number(el.dataset.i);
   switch (act) {
-    case 'day-prev': ui.date = addDays(ui.date, -1); route(); break;
-    case 'day-next': ui.date = addDays(ui.date, 1); route(); break;
-    case 'day-today': ui.date = todayIso(); route(); break;
+    case 'pick-day': ui.date = el.dataset.d; ui.gen.results = null; route(); break;
+    case 'toggle-fast': (state.fast ||= {})[ui.date] = !isFast(ui.date); save(); route(); break;
+    case 'day-count': {
+      const n = Number(el.dataset.n);
+      if ((state.dayCount?.[ui.date] ?? 3) === n) break;
+      (state.dayCount ||= {})[ui.date] = n;
+      state.days[ui.date] = [];
+      save(); route();
+      break;
+    }
+    case 'fill-week': {
+      let n = 0;
+      for (let k = 0; k < 7; k++) {
+        const ds = addDays(ui.date, k);
+        if (isFast(ds)) continue;
+        if (dayRecipes(ds).some((r) => !r)) { fillDay(ds, true); n++; }
+      }
+      save(); route(); toast(n ? `${n} nap kitöltve` : 'A hét már tele');
+      break;
+    }
     case 'gen-for': ui.gen.mealIdx = i; ui.gen.kcal = null; ui.gen.results = null; ui.gen.reason = null; location.hash = '#gen'; break;
     case 'open-day': if (e.target.closest('.meal-actions')) return; openSheet(dayRecipes(ui.date)[i], { source: 'day', date: ui.date, mealIdx: i }); break;
     case 'clear-meal': e.stopPropagation(); state.days[ui.date][i] = null; save(); route(); break;
     case 'swap-meal': {
       e.stopPropagation();
       const cur = dayRecipes(ui.date)[i];
-      const meal = state.settings.meals[i];
-      const { options } = generateOptions({ mealType: meal.type, kcal: Number(meal.kcal), count: 1, db, target: target(), exclude: state.settings.exclude, avoidTemplates: [cur.templateId] });
+      const meal = dayMeals(ui.date)[i];
+      const { options } = generateOptions({ mealType: meal.type, templateOk: templateOkFor(meal), kcal: meal.kcal, count: 1, db, target: target(), exclude: state.settings.exclude, avoidTemplates: [cur.templateId] });
       if (options[0]) { state.days[ui.date][i] = options[0]; save(); route(); }
       else toast('Nem találtam másikat.');
       break;
     }
     case 'fill-day':
     case 'regen-day': {
-      const meals = state.settings.meals.map((m) => ({ type: m.type, kcal: Number(m.kcal) }));
-      const fresh = generateDay({ meals, db, target: target(), exclude: state.settings.exclude });
-      const cur = dayRecipes(ui.date);
-      state.days[ui.date] = cur.map((r, k) => (act === 'fill-day' && r ? r : fresh[k]));
+      fillDay(ui.date, act === 'fill-day');
       save(); route();
       break;
     }
@@ -604,6 +679,15 @@ document.addEventListener('click', (e) => {
       } else {
         toast('Nem jön ki. Oldj fel egy zárat.');
       }
+      break;
+    }
+    case 'meal-ok': {
+      const t = TEMPLATE_BY_ID[ui.sheet.recipe.templateId];
+      const k = el.dataset.k;
+      const cur = new Set(mealsFor(t));
+      if (cur.has(k)) { if (cur.size > 1) cur.delete(k); } else cur.add(k);
+      (state.templateMealKeys ||= {})[t.id] = KEYS.filter((x) => cur.has(x));
+      save(); renderSheet();
       break;
     }
     case 'lock': {
