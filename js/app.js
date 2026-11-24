@@ -1,8 +1,8 @@
-import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuoe5ap';
-import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuoe5ap';
-import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuoe5ap';
-import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuoe5ap';
-import { PLANS } from './data/plans.js?v=mwuoe5ap';
+import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuojif6';
+import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuojif6';
+import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuojif6';
+import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuojif6';
+import { PLANS } from './data/plans.js?v=mwuojif6';
 
 // ---------- Állapot ----------
 const KEY = 'ketochef.v1';
@@ -25,7 +25,7 @@ const DEFAULT_STATE = {
   fast: {},
   dayCount: {},
   templateMealKeys: {},
-  people: { reggeli: 1, ebed: 4, vacsora: 4, egy: 4 },
+  people: { reggeli: 1, ebed: 2, vacsora: 2, egy: 2 },
 };
 
 function load() {
@@ -36,6 +36,8 @@ function load() {
   return structuredClone(DEFAULT_STATE);
 }
 let state = load();
+// A korábbi 4 fős alapérték helyett 2 (a régi alapértéket átírjuk, a sajátot nem)
+if (JSON.stringify(state.people) === '{"reggeli":1,"ebed":4,"vacsora":4,"egy":4}') state.people = { reggeli: 1, ebed: 2, vacsora: 2, egy: 2 };
 function save() {
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
 }
