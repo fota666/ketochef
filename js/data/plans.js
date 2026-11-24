@@ -1167,6 +1167,58 @@ export const PLANS = {
           "taste": 9.660334346504559
         }
       ]
-    }
+    },
+    "trips": [
+      {
+        "date": "2026-11-26",
+        "label": "Cs 11.26.",
+        "days": [
+          "2026-11-26",
+          "2026-11-27",
+          "2026-11-28",
+          "2026-11-29"
+        ],
+        "note": "Csütörtöki akciók, a csirke és a szalonna hétfő-szerdára is (fagyasztva).",
+        "also": {
+          "days": [
+            "2026-11-30",
+            "2026-12-01",
+            "2026-12-02"
+          ],
+          "ids": [
+            "csirkecomb",
+            "bacon",
+            "tojas",
+            "brokkoli",
+            "karfiol",
+            "kelbimbo",
+            "tejfol",
+            "disznozsir",
+            "vaj"
+          ]
+        }
+      },
+      {
+        "date": "2026-11-30",
+        "label": "H 11.30.",
+        "days": [
+          "2026-11-30",
+          "2026-12-01",
+          "2026-12-02"
+        ],
+        "note": "Hétfői akciók: Trapper sajt, habtejszín, zellerszár. Plusz friss zöldség.",
+        "skip": [
+          "csirkecomb",
+          "bacon",
+          "tojas",
+          "brokkoli",
+          "karfiol",
+          "kelbimbo",
+          "tejfol",
+          "disznozsir",
+          "vaj"
+        ]
+      }
+    ]
   }
 };

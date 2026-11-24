@@ -74,11 +74,26 @@ for (const [date, meals] of Object.entries(PLAN)) {
   });
 }
 
+// A csütörtöki bevásárláskor a hét egészére megvett tételek
+const SHARED = ['csirkecomb', 'bacon', 'tojas', 'brokkoli', 'karfiol', 'kelbimbo', 'tejfol', 'disznozsir', 'vaj'];
+
 const plan = {
   'lidl48-v3': {
     title: 'Lidl akciós menü, 7 nap',
     subtitle: '11.26. csütörtök – 12.02. szerda. Csütörtöktől vasárnapig: csirkecomb, szalonna, zöldség. Hétfőn: Trapper sajt, habtejszín, zellerszár.',
     days,
+    // Csütörtök-vasárnap akciós tételek a hét egészére, hétfőn a hétfői akciók és a friss zöldség
+    trips: [
+      {
+        date: '2026-11-26', label: 'Cs 11.26.', days: ['2026-11-26', '2026-11-27', '2026-11-28', '2026-11-29'],
+        note: 'Csütörtöki akciók, a csirke és a szalonna hétfő-szerdára is (fagyasztva).',
+        also: { days: ['2026-11-30', '2026-12-01', '2026-12-02'], ids: SHARED },
+      },
+      {
+        date: '2026-11-30', label: 'H 11.30.', days: ['2026-11-30', '2026-12-01', '2026-12-02'],
+        note: 'Hétfői akciók: Trapper sajt, habtejszín, zellerszár. Plusz friss zöldség.', skip: SHARED,
+      },
+    ],
   },
 };
 writeFileSync('js/data/plans.js', `// Generálva: scripts/make-plan.mjs\nexport const PLANS = ${JSON.stringify(plan, null, 2)};\n`);

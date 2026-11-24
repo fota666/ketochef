@@ -1,8 +1,8 @@
-import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuiubvw';
-import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuiubvw';
-import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuiubvw';
-import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuiubvw';
-import { PLANS } from './data/plans.js?v=mwuiubvw';
+import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuo9gty';
+import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuo9gty';
+import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuo9gty';
+import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuo9gty';
+import { PLANS } from './data/plans.js?v=mwuo9gty';
 
 // ---------- Állapot ----------
 const KEY = 'ketochef.v1';
@@ -25,6 +25,7 @@ const DEFAULT_STATE = {
   fast: {},
   dayCount: {},
   templateMealKeys: {},
+  people: { reggeli: 1, ebed: 4, vacsora: 4, egy: 4 },
 };
 
 function load() {
@@ -166,6 +167,8 @@ function mealsFor(t) {
   if (t.meals.includes('foetel')) out.push('ebed', 'vacsora');
   return out;
 }
+// Hányan eszik az adott étkezést (a bevásárláshoz és a főzéshez)
+const peopleFor = (date, i) => Math.max(1, Number(state.people?.[dayMeals(date)[i]?.key]) || 1);
 const templateOkFor = (meal) => (t) => mealsFor(t).some((k) => meal.accept.includes(k));
 
 function fillDay(date, keepExisting) {
@@ -518,7 +521,8 @@ function ingRow(r, it, idx) {
   const name = opts.length > 1
     ? `<select data-act="swap" data-idx="${idx}" aria-label="Alapanyag cseréje">${opts.map((id) => `<option value="${id}" ${id === it.id ? 'selected' : ''}>${esc(ingName(id))}</option>`).join('')}</select>`
     : `<span class="plain">${esc(g.name)}</span>`;
-  const sub = [g.unit ? `${n1(it.g / g.unit.g)} db` : null, g.q === 'becsült' ? '<span class="est">becsült</span>' : null, it.g <= 0 ? 'kimarad' : null].filter(Boolean).join(' · ');
+  const fam = ui.sheet?.source === 'day' ? peopleFor(ui.sheet.date, ui.sheet.mealIdx) : 1;
+  const sub = [g.unit ? `${n1(it.g / g.unit.g)} db` : null, fam > 1 && it.g > 0 ? `${fam} főre ${shopQty({ id: it.id, g: it.g * fam })}` : null, g.q === 'becsült' ? '<span class="est">becsült</span>' : null, it.g <= 0 ? 'kimarad' : null].filter(Boolean).join(' · ');
   return `<li class="ing-row" ${it.g <= 0 ? 'style="opacity:.5"' : ''}>
     <label class="qty"><input type="number" inputmode="decimal" min="0" step="${step}" value="${Math.round(it.g * 10) / 10}" data-act="grams" data-idx="${idx}" aria-label="${esc(g.name)} gramm" /><span>g</span></label>
     <div class="ing-name">${name}${sub ? `<span class="sub">${sub}</span>` : ''}</div>
@@ -553,24 +557,45 @@ function addToMenu(recipe, mealIdx = ui.gen.mealIdx, date = ui.date) {
 }
 
 // ---------- Bevásárlás ----------
+function shopTrips() {
+  const out = [];
+  for (const key of state.loadedPlans || []) for (const t of PLANS[key]?.trips || []) if (t.days[t.days.length - 1] >= todayIso()) out.push({ k: key + ':' + t.date, ...t });
+  return out;
+}
 function viewShop() {
   const ranges = { today: ['Ma', 0, 1], tomorrow: ['Holnap', 1, 1], week: ['7 nap', 0, 7] };
-  const [, start, len] = ranges[ui.shopRange];
-  const dates = Array.from({ length: len }, (_, i) => addDays(todayIso(), start + i));
+  const trips = shopTrips();
+  if (!ranges[ui.shopRange] && !trips.some((t) => t.k === ui.shopRange)) ui.shopRange = trips[0]?.k || 'week';
+  const trip = trips.find((t) => t.k === ui.shopRange);
+  let dates;
+  if (trip) dates = trip.days;
+  else { const [, start, len] = ranges[ui.shopRange]; dates = Array.from({ length: len }, (_, i) => addDays(todayIso(), start + i)); }
   const sums = {};
   let meals = 0;
-  for (const d of dates) if (!isFast(d)) for (const r of dayRecipes(d)) if (r) { meals++; for (const it of r.items) if (it.g > 0) sums[it.id] = (sums[it.id] || 0) + it.g; }
+  const add = (d, only) => { if (isFast(d)) return; dayRecipes(d).forEach((r, i) => { if (!r) return; if (!only) meals++; const n = peopleFor(d, i); for (const it of r.items) if (it.g > 0 && (!only || only.includes(it.id)) && !(trip?.skip || []).includes(it.id)) sums[it.id] = (sums[it.id] || 0) + it.g * n; }); };
+  for (const d of dates) add(d);
+  for (const d of trip?.also?.days || []) add(d, trip.also.ids);
   const groups = {};
   for (const [id, g] of Object.entries(sums)) (groups[db[id]?.cat || 'egyeb'] ||= []).push({ id, g });
   const key = (id) => `${ui.shopRange}:${dates[0]}:${id}`;
+  const P = state.people;
+  const fmt = (d) => { const x = new Date(d + 'T12:00:00'); return `${x.getMonth() + 1}.${x.getDate()}.`; };
   return `<h1 class="page-title">Bevásárlás</h1>
-  <div class="seg" style="margin-bottom:8px">${Object.entries(ranges).map(([k, [l]]) => `<button data-act="shop-range" data-k="${k}" class="${ui.shopRange === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+  <div class="seg" style="margin-bottom:8px">${trips.map((t) => `<button data-act="shop-range" data-k="${esc(t.k)}" class="${ui.shopRange === t.k ? 'on' : ''}">${esc(t.label)}</button>`).join('')}${Object.entries(ranges).map(([k, [l]]) => `<button data-act="shop-range" data-k="${k}" class="${ui.shopRange === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+  <p class="muted" style="margin:0 0 12px;font-size:14px">${trip ? `${esc(trip.note || '')} ` : ''}${fmt(dates[0])}–${fmt(dates[dates.length - 1])} · Reggeli ${P.reggeli}, ebéd ${P.ebed}, vacsora ${P.vacsora} főre</p>
   ${!meals ? `<div class="empty-state">Üres a menü.</div>` : ''}
   ${Object.keys(CATEGORIES).filter((c) => groups[c]).map((c) => `<div class="shop-group"><h3>${esc(CATEGORIES[c])}</h3>
     ${groups[c].sort((a, b) => ingName(a.id).localeCompare(ingName(b.id), 'hu')).map(({ id, g }) => {
       const done = !!state.shopChecked[key(id)];
-      return `<label class="shop-item ${done ? 'done' : ''}"><input type="checkbox" data-act="shop-check" data-k="${esc(key(id))}" ${done ? 'checked' : ''}/><span class="nm">${esc(ingName(id))}</span><span class="q num">${esc(qtyText({ id, g }))}${db[id].unit ? '' : ''}</span></label>`;
+      return `<label class="shop-item ${done ? 'done' : ''}"><input type="checkbox" data-act="shop-check" data-k="${esc(key(id))}" ${done ? 'checked' : ''}/><span class="nm">${esc(ingName(id))}</span><span class="q num">${esc(shopQty({ id, g }))}</span></label>`;
     }).join('')}</div>`).join('')}`;
+}
+// Bolti mennyiség: 1 kg felett kg-ban, darabos tételnél felfelé kerekítve
+function shopQty(it) {
+  const ing = db[it.id];
+  if (ing?.unit) return `${Math.ceil(it.g / ing.unit.g - 0.05)} ${ing.unit.name}`;
+  if (it.g >= 1000) return `${n1(Math.ceil(it.g / 100) / 10)} kg`;
+  return `${n0(Math.ceil(it.g / 10) * 10)} g`;
 }
 
 // ---------- Beállítások ----------
@@ -579,6 +604,7 @@ function viewSettings() {
   return `<h1 class="page-title">Beállítások</h1>
   <div class="card"><h2>Étkezések, kcal</h2>
     <div class="grid3">${s.meals.map((m, i) => `<label>${esc(m.name)}<input class="input num" type="number" step="25" min="200" max="1500" data-act="set-meal" data-i="${i}" value="${m.kcal}"/></label>`).join('')}</div>
+    <div class="grid3" style="margin-top:10px">${KEYS.map((k, j) => `<label>${['Reggeli', 'Ebéd', 'Vacsora'][j]}, fő<input class="input num" type="number" step="1" min="1" max="12" data-act="set-people" data-k="${k}" value="${state.people[k]}"/></label>`).join('')}</div>
     <p class="muted" style="margin:12px 0 0;font-size:14px">Napi: <b class="num">${n0(s.meals.reduce((a, m) => a + Number(m.kcal), 0))} kcal</b></p>
   </div>
   <div class="card"><h2>Makróarány, energia%</h2>
@@ -786,6 +812,7 @@ document.addEventListener('change', (e) => {
   }
   if (act === 'sheet-kcal' && ui.sheet) refreshNutri();
   if (act === 'grams' && ui.sheet) renderSheet();
+  if (act === 'set-people') { state.people[el.dataset.k] = Math.max(1, Math.min(12, Math.round(Number(el.value)) || 1)); if (el.dataset.k === 'ebed') state.people.egy = state.people.ebed; save(); }
   if (act === 'set-meal') { state.settings.meals[Number(el.dataset.i)].kcal = Math.max(200, Math.min(1500, Number(el.value) || 0)); save(); route(); }
   if (act === 'set-ratio') {
     state.settings.ratios[el.dataset.k] = (Number(el.value) || 0) / 100;
