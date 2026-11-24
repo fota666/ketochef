@@ -1285,13 +1285,13 @@ export const TEMPLATES = [
   },
   {
     id: "gambas",
-    name: "Fokhagymás-chilis garnéla",
+    name: "Fokhagymás-chilis serpenyős csirke vagy tarja",
     cuisine: "mediterran",
     meals: [
       "foetel"
     ],
     method: "Serpenyő",
-    time: 20,
+    time: 25,
     slots: [
       {
         key: "feh",
@@ -1301,7 +1301,8 @@ export const TEMPLATES = [
           1
         ],
         options: [
-          "garnela"
+          "csirkecomb",
+          "tarja"
         ]
       },
       {
@@ -1370,11 +1371,6 @@ export const TEMPLATES = [
       }
     ],
     ranges: {
-      garnela: [
-        150,
-        200,
-        250
-      ],
       fokhagyma: [
         6,
         10,
@@ -1391,13 +1387,13 @@ export const TEMPLATES = [
         15
       ],
       olivaolaj: [
-        10,
-        18,
+        0,
+        12,
         25
       ],
       vaj: [
-        5,
-        12,
+        0,
+        10,
         20
       ],
       cukkini: [
@@ -1454,18 +1450,27 @@ export const TEMPLATES = [
         30,
         50,
         70
+      ],
+      csirkecomb: [
+        150,
+        190,
+        240
+      ],
+      tarja: [
+        140,
+        170,
+        220
       ]
     },
     spices: "só, petrezselyem, citromhéj",
     steps: [
-      "Szeleteld vékonyra a fokhagymát és a chilit, vágd falatnyira a köretet ({zold}).",
+      "Vágd a húst ({feh}) 2 cm-es falatokra, sózd. Szeleteld vékonyra a fokhagymát és a chilit, vágd falatnyira a köretet ({zold}).",
       "A zsiradék ({zsir}) harmadán, erős lángon pirítsd a köretet 4-6 percig (brokkolit és spárgát fedő alatt, 2 evőkanál vízzel), sózd, tedd tányérra.",
-      "A maradék zsiradékon alacsony lángon 2 percig pirítsd a fokhagymát és a chilit, hogy ne barnuljon meg.",
-      "Emeld a lángot, tedd bele a garnélát, oldalanként 1-2 perc alatt süsd rózsaszínre, locsold meg citromlével.",
-      "Tedd a garnélát a köret mellé, egy marék friss zöldre ({friss}).",
-      "Öntsd rá a fokhagymás-chilis olajat, és tálald ezzel: {extra}."
-    ],
-    weight: 0.25
+      "Ugyanott, erős lángon süsd a húst 6-8 percig, amíg minden oldala megbarnul és átsül (csirkecombot teljesen át).",
+      "Vedd lejjebb a lángot, add hozzá a maradék zsiradékot, a fokhagymát és a chilit, 1-2 percig forgasd, hogy ne égjen meg. Locsold meg citromlével.",
+      "Tedd a húst a köret mellé, egy marék friss zöldre ({friss}).",
+      "Öntsd rá a fokhagymás-chilis zsiradékot, és tálald ezzel: {extra}."
+    ]
   },
   {
     id: "shakshuka",
