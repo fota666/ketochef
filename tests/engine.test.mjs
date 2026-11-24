@@ -272,3 +272,19 @@ test('darált sertés alapból 20%, a 10% és 15% cserével elérhető', () => {
   const sw = swapOptions(r, idx, db);
   assert.ok(sw.includes('sertes10') && sw.includes('sertes15') && sw.includes('sertes20'));
 });
+
+test('nagy adag (1900 kcal): zöldség max 350 g tételenként, nincs két paradicsomfajta egyszerre', () => {
+  const rng = mulberry32(77);
+  let n = 0;
+  for (let k = 0; k < 10; k++) {
+    const { options } = generateOptions({ mealType: 'foetel', kcal: 1900, count: 3, db, rng });
+    for (const o of options) {
+      n++;
+      assert.equal(validate(o.items, db, 1900).status, 'PASS');
+      for (const it of o.items) if (db[it.id].cat === 'zold') assert.ok(it.g <= 350, `${o.name}: ${it.id} ${it.g}`);
+      const groups = o.items.map((it) => db[it.id].group).filter(Boolean);
+      assert.equal(new Set(groups).size, groups.length, o.name);
+    }
+  }
+  assert.ok(n >= 25);
+});

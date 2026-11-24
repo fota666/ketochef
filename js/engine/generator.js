@@ -1,9 +1,9 @@
 // Receptgenerátor: receptkeretből véletlenszerűen, ízlés szerint súlyozva összeillő alapanyagokat választ,
 // majd az optimalizálóval grammokat számol. Csak PASS receptet ad vissza.
 
-import { TEMPLATES, TEMPLATE_BY_ID } from '../data/templates.js?v=mwtrjkbd';
-import { optimize } from './optimizer.js?v=mwtrjkbd';
-import { DEFAULT_TARGET } from './macros.js?v=mwtrjkbd';
+import { TEMPLATES, TEMPLATE_BY_ID } from '../data/templates.js?v=mwud1y9j';
+import { optimize } from './optimizer.js?v=mwud1y9j';
+import { DEFAULT_TARGET } from './macros.js?v=mwud1y9j';
 
 export function mulberry32(seed) {
   let a = seed >>> 0;
@@ -57,7 +57,9 @@ export function fillTemplate(t, { mustInclude = [], exclude = [], rng, db, avoid
   const items = t.fixed.map((f) => ({ id: f.id, slot: 'fix' }));
   for (const slot of t.slots) {
     const must = mustInclude.filter((id) => slot.options.includes(id) && !chosen.has(id));
-    const pool = slot.options.filter((id) => !chosen.has(id) && !exclude.includes(id) && !must.includes(id) && db[id]);
+    const groupOf = (id) => db[id]?.group || id;
+    const chosenGroups = new Set([...chosen, ...must].map(groupOf));
+    const pool = slot.options.filter((id) => !chosen.has(id) && !chosenGroups.has(groupOf(id)) && !exclude.includes(id) && !must.includes(id) && db[id]);
     const [lo, hi] = slot.pick;
     const k = Math.max(must.length, randInt(rng, lo, hi));
     const need = k - must.length;
@@ -66,11 +68,14 @@ export function fillTemplate(t, { mustInclude = [], exclude = [], rng, db, avoid
     }
     const picked = [
       ...must,
-      ...weightedSample(pool, Math.max(0, need), rng, (id) => {
+      ...weightedSample(pool, pool.length, rng, (id) => {
         const s = db[id].score ?? 5;
         const penalty = avoid.includes(id) ? 0.25 : 1;
         return s * s * penalty;
-      }),
+      })
+        // azonos csoportból (pl. paradicsom és koktélparadicsom) csak egy
+        .filter((id, k, arr) => arr.findIndex((x) => groupOf(x) === groupOf(id)) === k)
+        .slice(0, Math.max(0, need)),
     ];
     for (const id of picked) {
       chosen.add(id);
@@ -93,7 +98,11 @@ export function specFor(t, items, db, scale = 1) {
   return items.map((it) => {
     const ing = db[it.id];
     const r0 = t?.ranges?.[it.id] || ing.range;
-    const range = scale === 1 ? r0 : r0.map((x) => x * scale);
+    // Nagy adagnál a hús, sajt, zsiradék arányosan nő, a zöldség és a fűszer csak mérsékelten (max. 1,6x, 350 g)
+    const isVeg = ing.cat === 'zold' || ing.cat === 'szosz' || ing.cat === 'egyeb';
+    const f = isVeg ? Math.min(scale, 1.6) : scale;
+    let range = f === 1 ? r0 : r0.map((x) => x * f);
+    if (isVeg && scale > 1) range = range.map((x) => Math.min(x, Math.max(350, r0[2])));
     return { id: it.id, slot: it.slot, range, step: ing.step, locked: it.locked, g: it.g };
   });
 }
