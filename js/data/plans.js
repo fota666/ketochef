@@ -1178,23 +1178,19 @@ export const PLANS = {
           "2026-11-28",
           "2026-11-29"
         ],
-        "note": "Csütörtöki akciók, a csirke és a szalonna hétfő-szerdára is (fagyasztva).",
+        "note": "Az egész hétre, a hétfői tételek kivételével. A hétfő-szerdai csirkét fagyaszd le.",
         "also": {
           "days": [
             "2026-11-30",
             "2026-12-01",
             "2026-12-02"
           ],
-          "ids": [
-            "csirkecomb",
-            "bacon",
-            "tojas",
-            "brokkoli",
-            "karfiol",
-            "kelbimbo",
-            "tejfol",
-            "disznozsir",
-            "vaj"
+          "except": [
+            "gouda",
+            "tejszin",
+            "szarzeller",
+            "gomba",
+            "romai"
           ]
         }
       },
@@ -1206,17 +1202,13 @@ export const PLANS = {
           "2026-12-01",
           "2026-12-02"
         ],
-        "note": "Hétfői akciók: Trapper sajt, habtejszín, zellerszár. Plusz friss zöldség.",
-        "skip": [
-          "csirkecomb",
-          "bacon",
-          "tojas",
-          "brokkoli",
-          "karfiol",
-          "kelbimbo",
-          "tejfol",
-          "disznozsir",
-          "vaj"
+        "note": "Hétfői akciók: Trapper sajt (a gouda helyett), habtejszín, zellerszár. Plusz friss gomba és saláta.",
+        "only": [
+          "gouda",
+          "tejszin",
+          "szarzeller",
+          "gomba",
+          "romai"
         ]
       }
     ]

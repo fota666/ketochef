@@ -1,8 +1,8 @@
-import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuo9tg3';
-import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuo9tg3';
-import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuo9tg3';
-import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuo9tg3';
-import { PLANS } from './data/plans.js?v=mwuo9tg3';
+import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuoe5ap';
+import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuoe5ap';
+import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuoe5ap';
+import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuoe5ap';
+import { PLANS } from './data/plans.js?v=mwuoe5ap';
 
 // ---------- Állapot ----------
 const KEY = 'ketochef.v1';
@@ -572,9 +572,9 @@ function viewShop() {
   else { const [, start, len] = ranges[ui.shopRange]; dates = Array.from({ length: len }, (_, i) => addDays(todayIso(), start + i)); }
   const sums = {};
   let meals = 0;
-  const add = (d, only) => { if (isFast(d)) return; dayRecipes(d).forEach((r, i) => { if (!r) return; if (!only) meals++; const n = peopleFor(d, i); for (const it of r.items) if (it.g > 0 && (!only || only.includes(it.id)) && !(trip?.skip || []).includes(it.id)) sums[it.id] = (sums[it.id] || 0) + it.g * n; }); };
+  const add = (d, only) => { if (isFast(d)) return; dayRecipes(d).forEach((r, i) => { if (!r) return; if (!only) meals++; const n = peopleFor(d, i); for (const it of r.items) if (it.g > 0 && (!only || only(it.id)) && (!trip?.only || trip.only.includes(it.id))) sums[it.id] = (sums[it.id] || 0) + it.g * n; }); };
   for (const d of dates) add(d);
-  for (const d of trip?.also?.days || []) add(d, trip.also.ids);
+  for (const d of trip?.also?.days || []) add(d, (id) => !trip.also.except.includes(id));
   const groups = {};
   for (const [id, g] of Object.entries(sums)) (groups[db[id]?.cat || 'egyeb'] ||= []).push({ id, g });
   const key = (id) => `${ui.shopRange}:${dates[0]}:${id}`;

@@ -74,8 +74,9 @@ for (const [date, meals] of Object.entries(PLAN)) {
   });
 }
 
-// A csütörtöki bevásárláskor a hét egészére megvett tételek
-const SHARED = ['csirkecomb', 'bacon', 'tojas', 'brokkoli', 'karfiol', 'kelbimbo', 'tejfol', 'disznozsir', 'vaj'];
+// Hétfőn csak a hétfői akciós és a gyorsan romló tételek, minden más csütörtökön az egész hétre
+// (gouda helyett hétfőn Trapper sajt)
+const MONDAY = ['gouda', 'tejszin', 'szarzeller', 'gomba', 'romai'];
 
 const plan = {
   'lidl48-v3': {
@@ -86,12 +87,12 @@ const plan = {
     trips: [
       {
         date: '2026-11-26', label: 'Cs 11.26.', days: ['2026-11-26', '2026-11-27', '2026-11-28', '2026-11-29'],
-        note: 'Csütörtöki akciók, a csirke és a szalonna hétfő-szerdára is (fagyasztva).',
-        also: { days: ['2026-11-30', '2026-12-01', '2026-12-02'], ids: SHARED },
+        note: 'Az egész hétre, a hétfői tételek kivételével. A hétfő-szerdai csirkét fagyaszd le.',
+        also: { days: ['2026-11-30', '2026-12-01', '2026-12-02'], except: MONDAY },
       },
       {
         date: '2026-11-30', label: 'H 11.30.', days: ['2026-11-30', '2026-12-01', '2026-12-02'],
-        note: 'Hétfői akciók: Trapper sajt, habtejszín, zellerszár. Plusz friss zöldség.', skip: SHARED,
+        note: 'Hétfői akciók: Trapper sajt (a gouda helyett), habtejszín, zellerszár. Plusz friss gomba és saláta.', only: MONDAY,
       },
     ],
   },
