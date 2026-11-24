@@ -1,8 +1,8 @@
-import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuo9gty';
-import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuo9gty';
-import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuo9gty';
-import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuo9gty';
-import { PLANS } from './data/plans.js?v=mwuo9gty';
+import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuo9tg3';
+import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuo9tg3';
+import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuo9tg3';
+import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuo9tg3';
+import { PLANS } from './data/plans.js?v=mwuo9tg3';
 
 // ---------- Állapot ----------
 const KEY = 'ketochef.v1';
@@ -113,7 +113,7 @@ const ui = {
   date: todayIso(),
   gen: { mealIdx: 1, kcal: null, cuisine: null, must: [], exclude: [], results: null, reason: null, busy: false },
   sheet: null, // { recipe, source: 'day'|'gen'|'fav', date, mealIdx }
-  shopRange: 'week',
+  shopRange: null,
 };
 
 function route() {
