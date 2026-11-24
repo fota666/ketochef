@@ -285,3 +285,9 @@ details.sources summary { cursor: pointer; font-weight: 600; color: var(--ink-2)
 .tog { border: 1px solid var(--line); background: var(--bg); padding: 6px 10px; font-size: 13.5px; font-weight: 600; min-height: 34px; }
 .tog.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 @media (min-width: 820px) { .cal { grid-auto-columns: calc((100% - 13 * 4px) / 14); } }
+
+/* Receptfotók */
+.result-img { display: block; width: calc(100% + 36px); margin: -18px -18px 16px; aspect-ratio: 16 / 10; object-fit: cover; background: var(--surface-2); }
+.hero-img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; background: var(--surface-2); }
+.meal-img { float: right; width: 76px; height: 76px; object-fit: cover; margin: 0 0 8px 14px; background: var(--surface-2); }
+.meal-foot { clear: both; }

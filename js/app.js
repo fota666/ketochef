@@ -1,7 +1,7 @@
-import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwufjai3';
-import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwufjai3';
-import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwufjai3';
-import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwufjai3';
+import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwugdqnj';
+import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwugdqnj';
+import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwugdqnj';
+import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwugdqnj';
 
 // ---------- Állapot ----------
 const KEY = 'ketochef.v1';
@@ -81,6 +81,9 @@ function toast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => (t.hidden = true), 2200);
 }
+
+// Receptkeret-fotó: img/<keret>.jpg, ha nincs, az elem eltűnik
+const imgTag = (tid, cls) => `<img class="${cls}" src="img/${tid}.jpg" alt="" loading="lazy" onerror="this.remove()" />`;
 
 const LOCK_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
 const UNLOCK_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>`;
@@ -256,6 +259,7 @@ function mealCard(r, i) {
   const v = validate(r.items, db, r.kcalTarget, target());
   const main = mainIngredients(r);
   return `<article class="meal" data-act="open-day" data-i="${i}" tabindex="0">
+    ${imgTag(r.templateId, "meal-img")}
     <div class="meal-head"><span class="eyebrow">${esc(meal.name)}</span>${statusPill(v)}</div>
     <h3>${esc(r.name)}</h3>
     <div class="ings">${esc(main)}</div>
@@ -323,6 +327,7 @@ function resultCard(r, i, src) {
   const v = validate(r.items, db, r.kcalTarget, target());
   const items = r.items.filter((it) => it.g > 0);
   return `<article class="result">
+    ${imgTag(r.templateId, "result-img")}
     <div class="meta"><span class="eyebrow">${esc(CUISINES[r.cuisine] || '')} · ${r.time} perc</span>${statusPill(v)}</div>
     <h3 data-act="open-${src}" data-i="${i}">${esc(r.name)}</h3>
     <p class="subtitle">${esc(subtitle(r))}</p>
@@ -409,6 +414,7 @@ function renderSheet() {
       <button class="icon-btn" data-act="sheet-close" aria-label="Bezárás">←</button>
       <button class="icon-btn" data-act="sheet-fav" aria-label="Kedvenc">${isFav ? '★' : '☆'}</button>
     </div>
+    ${imgTag(r.templateId, "hero-img")}
     <div class="sheet-body">
       <div class="eyebrow">${esc(CUISINES[r.cuisine] || '')}${inMenu ? ' · ' + esc(dayMeals(s.date)[s.mealIdx]?.name || '') : ''}</div>
       <h1 class="recipe-title">${esc(r.name)}</h1>
