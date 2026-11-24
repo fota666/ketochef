@@ -40,8 +40,7 @@ export const TEMPLATES = [
           "csirkecomb",
           "csirkemell",
           "tarja",
-          "steak",
-          "garnela"
+          "steak"
         ]
       },
       {
@@ -468,8 +467,7 @@ export const TEMPLATES = [
         ],
         options: [
           "csirkecomb",
-          "csirkemell",
-          "garnela"
+          "csirkemell"
         ]
       },
       {
@@ -638,9 +636,8 @@ export const TEMPLATES = [
         options: [
           "csirkecomb",
           "csirkemell",
-          "garnela",
-          "steak",
-          "tarja"
+          "tarja",
+          "steak"
         ]
       },
       {
@@ -864,7 +861,7 @@ export const TEMPLATES = [
         options: [
           "csirkecomb",
           "csirkemell",
-          "garnela",
+          "tarja",
           "tojas",
           "szardinia"
         ]
@@ -1467,7 +1464,8 @@ export const TEMPLATES = [
       "Emeld a lángot, tedd bele a garnélát, oldalanként 1-2 perc alatt süsd rózsaszínre, locsold meg citromlével.",
       "Tedd a garnélát a köret mellé, egy marék friss zöldre ({friss}).",
       "Öntsd rá a fokhagymás-chilis olajat, és tálald ezzel: {extra}."
-    ]
+    ],
+    weight: 0.25
   },
   {
     id: "shakshuka",
