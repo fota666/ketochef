@@ -1,9 +1,9 @@
 // Receptgenerátor: receptkeretből véletlenszerűen, ízlés szerint súlyozva összeillő alapanyagokat választ,
 // majd az optimalizálóval grammokat számol. Csak PASS receptet ad vissza.
 
-import { TEMPLATES, TEMPLATE_BY_ID } from '../data/templates.js?v=mwud1y9j';
-import { optimize } from './optimizer.js?v=mwud1y9j';
-import { DEFAULT_TARGET } from './macros.js?v=mwud1y9j';
+import { TEMPLATES, TEMPLATE_BY_ID } from '../data/templates.js?v=mwufjai3';
+import { optimize } from './optimizer.js?v=mwufjai3';
+import { DEFAULT_TARGET } from './macros.js?v=mwufjai3';
 
 export function mulberry32(seed) {
   let a = seed >>> 0;
@@ -160,7 +160,7 @@ export function generateOptions(opts) {
     // Kerülendő és már használt keretek kisebb súllyal
     const t = weightedSample(templates, 1, rng, (tt) => {
       const used = usedTemplates.get(tt.id) || 0;
-      const avoidW = avoidTemplates.includes(tt.id) ? 0.2 : 1;
+      const avoidW = avoidTemplates.includes(tt.id) ? 0 : 1; // ha minden más elfogyott, a mintavétel az elsőt adja
       return ((tt.weight ?? 1) * avoidW) / (1 + 4 * used);
     })[0];
     const items = fillTemplate(t, { mustInclude, exclude, rng, db, avoid });

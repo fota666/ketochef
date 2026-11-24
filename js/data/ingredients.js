@@ -124,7 +124,6 @@ export const INGREDIENTS = [
   I('lenmag', 'Lenmag', 'mag', 534, 18.3, 42.2, 1.6, 27.3, 'ref', USDA, [5, 10, 20], 6, { step: 1 }),
   I('szezammag', 'Szezámmag', 'mag', 573, 17.7, 49.7, 11.6, 11.8, 'ref', USDA, [3, 8, 15], 8, { step: 1 }),
   I('foldimogyoro', 'Földimogyoró, pörkölt', 'mag', 567, 25.8, 49.2, 7.6, 8.5, 'ref', USDA, [5, 20, 35], 7, { step: 1 }),
-  I('mandulaliszt', 'Mandulaliszt (blansírozott)', 'mag', 571, 21.4, 50.0, 10.7, 10.7, 'ref', USDA + ' almond flour', [10, 25, 40], 8, { step: 1 }),
   I('tahini', 'Tahini', 'mag', 595, 17.0, 53.8, 11.9, 9.3, 'ref', USDA, [5, 15, 30], 10, { step: 1 }),
   I('etcsoki', 'Étcsokoládé 85%', 'mag', 584, 12.5, 46.0, 19.0, 0, 'becsült', CIMKE, [0, 10, 20], 10, { step: 1 }),
 
@@ -139,6 +138,20 @@ export const INGREDIENTS = [
   I('paradicsompure', 'Paradicsompüré (sűrített)', 'szosz', 82, 4.3, 0.5, 14.8, 4.1, 'ref', USDA, [0, 15, 30], 8, { step: 1 }),
   I('fuszerpaprika', 'Fűszerpaprika, őrölt', 'szosz', 282, 14.1, 12.9, 19.1, 34.9, 'ref', USDA, [0, 3, 8], 9, { step: 1 }),
   I('passata', 'Passata', 'szosz', 32, 1.6, 0.2, 5.5, 1.5, 'becsült', CIMKE, [50, 100, 180], 8, { step: 10 }),
+  // Receptátnézés során felvett alapanyagok
+  I('szarzeller', "Szárzeller", 'zold', 14, 0.69, 0.17, 1.37, 1.6, 'ref', "USDA FDC SR Legacy 11143 Celery, raw", [30, 60, 120], 6, { step: 10 }),
+  I('napraforgoolaj', "Napraforgóolaj", 'zsir', 884, 0, 100, 0, 0, 'ref', "USDA FDC SR Legacy 04506 Oil, sunflower, linoleic (less than 60%)", [0, 10, 25], 7, { step: 1 }),
+  I('kinaikel', "Kínai kel", 'zold', 16, 1.2, 0.2, 2, 1.2, 'ref', "USDA FDC SR Legacy 11119 Cabbage, chinese (pe-tsai), raw", [60, 120, 250], 7, { step: 10, group: "kaposzta" }),
+  I('mungbabcsira', "Mungóbabcsíra", 'zold', 30, 3, 0.2, 4.1, 1.8, 'ref', "USDA FDC SR Legacy 11043 Mung beans, mature seeds, sprouted, raw", [40, 80, 120], 7, { step: 10 }),
+  I('karalabe', "Karalábé", 'zold', 27, 1.7, 0.1, 2.6, 3.6, 'ref', "USDA FDC SR Legacy 11241 Kohlrabi, raw", [50, 80, 150], 7, { step: 10 }),
+  I('edeskomeny', "Édeskömény (gumó)", 'zold', 31, 1.24, 0.2, 4.2, 3.1, 'ref', "USDA FDC SR Legacy 11957 Fennel, bulb, raw", [30, 70, 150], 7, { step: 10 }),
+  I('sparga', "Zöldspárga", 'zold', 20, 2.2, 0.12, 1.78, 2.1, 'ref', "USDA FDC SR Legacy 11011 Asparagus, raw", [80, 150, 220], 7, { step: 10 }),
+  I('fejessalata', "Fejes saláta", 'zold', 13, 1.35, 0.22, 1.13, 1.1, 'ref', "USDA FDC SR Legacy 11250 Lettuce, butterhead, raw", [40, 80, 150], 7, { step: 10, group: "salata" }),
+  I('disznozsir', "Disznózsír", 'zsir', 902, 0, 100, 0, 0, 'ref', "USDA FDC SR Legacy 04002 Lard", [0, 10, 20], 8, { step: 1 }),
+  I('zoldpaprika', "Zöldpaprika (lecsópaprika)", 'zold', 20, 0.86, 0.17, 2.94, 1.7, 'ref', "USDA FDC SR Legacy 11333 Peppers, sweet, green, raw", [20, 50, 100], 8, { step: 10 }),
+  I('sargarepa', "Sárgarépa", 'zold', 41, 0.93, 0.24, 6.78, 2.8, 'ref', "USDA FDC SR Legacy 11124 Carrots, raw", [10, 20, 40], 7),
+  I('finomliszt', "Finomliszt (BL55)", 'egyeb', 364, 10.33, 0.98, 73.61, 2.7, 'ref', "USDA FDC SR Legacy 20081 wheat flour, white, all-purpose, enriched, bleached", [3, 6, 8], 6, { step: 1 }),
+  I('zabliszt', "Zabliszt", 'egyeb', 404, 14.66, 9.12, 59.2, 6.5, 'ref', "USDA FDC SR Legacy 20063 oat flour, partially debranned", [3, 6, 8], 6, { step: 1 }),
 ];
 
 export const BY_ID = Object.fromEntries(INGREDIENTS.map((i) => [i.id, i]));

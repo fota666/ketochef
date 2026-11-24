@@ -1,7 +1,7 @@
 // Grammoptimalizáló: dobozkorlátos konvex legkisebb négyzetek (koordináta-módszer),
 // utána diszkretizálás a konyhai lépésközre és mohó helyi javítás a tényleges ellenőrzési pontra.
 
-import { DEFAULT_TARGET, gramTargets, validate, errorScore } from './macros.js?v=mwud1y9j';
+import { DEFAULT_TARGET, gramTargets, validate, errorScore } from './macros.js?v=mwufjai3';
 
 const MACROS = ['p', 'f', 'c'];
 const WEIGHTS = { p: 1, f: 1, c: 1.5 };

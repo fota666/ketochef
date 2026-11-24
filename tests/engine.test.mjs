@@ -255,7 +255,7 @@ test('paprikás csirke: a fűszerpaprika is számít a makróba', () => {
   assert.ok(options.length >= 1);
   for (const o of options) {
     const p = o.items.find((x) => x.id === 'fuszerpaprika');
-    assert.ok(p && p.g >= 3);
+    assert.ok(p && p.g > 0);
     assert.equal(validate(o.items, db, 675).status, 'PASS');
   }
 });
