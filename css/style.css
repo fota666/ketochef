@@ -291,3 +291,9 @@ details.sources summary { cursor: pointer; font-weight: 600; color: var(--ink-2)
 .hero-img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; background: var(--surface-2); }
 .meal-img { float: right; width: 76px; height: 76px; object-fit: cover; margin: 0 0 8px 14px; background: var(--surface-2); }
 .meal-foot { clear: both; }
+
+/* Ajánlott menü sáv */
+.plan-banner { display: flex; justify-content: space-between; align-items: center; gap: 12px; border: 1px solid var(--ink); padding: 12px 14px; margin: 4px 0 14px; }
+.plan-banner b { display: block; font-size: 15px; }
+.plan-banner span { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.plan-actions { display: flex; gap: 4px; flex: none; }

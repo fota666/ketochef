@@ -288,3 +288,18 @@ test('nagy adag (1900 kcal): zöldség max 350 g tételenként, nincs két parad
   }
   assert.ok(n >= 25);
 });
+
+test('ajánlott menük: minden recept PASS, a napok 1900 kcal ±5%-on belül', async () => {
+  const { PLANS } = await import('../js/data/plans.js');
+  for (const pl of Object.values(PLANS)) {
+    for (const [date, recipes] of Object.entries(pl.days)) {
+      let kcal = 0;
+      for (const r of recipes) {
+        const v = validate(r.items, db, r.kcalTarget);
+        assert.equal(v.status, 'PASS', `${date} ${r.name}`);
+        kcal += v.nutrition.kcal;
+      }
+      assert.ok(Math.abs(kcal - 1900) / 1900 <= 0.05, `${date}: ${kcal}`);
+    }
+  }
+});

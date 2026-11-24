@@ -1,7 +1,8 @@
-import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuhn6bx';
-import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuhn6bx';
-import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuhn6bx';
-import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuhn6bx';
+import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuid254';
+import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuid254';
+import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuid254';
+import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuid254';
+import { PLANS } from './data/plans.js?v=mwuid254';
 
 // ---------- Állapot ----------
 const KEY = 'ketochef.v1';
@@ -174,6 +175,36 @@ function fillDay(date, keepExisting) {
   state.days[date] = cur.map((r, k) => (keepExisting && r ? r : fresh[k]));
 }
 
+// Ajánlott menük (pl. heti akciókból): egy gombbal betölthetők a menübe
+function activePlans() {
+  return Object.entries(PLANS).filter(([key, pl]) => {
+    const dates = Object.keys(pl.days);
+    return dates[dates.length - 1] >= todayIso() && !(state.loadedPlans || []).includes(key) && !(state.hiddenPlans || []).includes(key);
+  });
+}
+function planBanner() {
+  return activePlans().map(([key, pl]) => `<div class="plan-banner"><div><b>${esc(pl.title)}</b><span>${esc(pl.subtitle)}</span></div>
+    <div class="plan-actions"><button class="btn primary sm" data-act="load-plan" data-k="${key}">Betöltés</button><button class="btn ghost sm" data-act="hide-plan" data-k="${key}" aria-label="Elrejtés">✕</button></div></div>`).join('');
+}
+function loadPlan(key) {
+  const pl = PLANS[key];
+  if (!pl) return;
+  const dates = Object.keys(pl.days);
+  const busy = dates.filter((d) => (state.days[d] || []).some(Boolean));
+  if (busy.length && !confirm('Ezeken a napokon már van recept, felülírjam? ' + busy.join(', '))) return;
+  for (const d of dates) {
+    state.days[d] = structuredClone(pl.days[d]);
+    (state.dayCount ||= {})[d] = 3;
+    if (state.fast) state.fast[d] = false;
+  }
+  (state.loadedPlans ||= []).push(key);
+  save();
+  ui.date = dates[0];
+  if (location.hash !== '#menu') location.hash = '#menu';
+  route();
+  toast(pl.title + ' betöltve');
+}
+
 function calendarStrip() {
   const days = Array.from({ length: 14 }, (_, k) => addDays(todayIso(), k));
   return `<nav class="cal" aria-label="Napok">${days.map((ds) => {
@@ -203,6 +234,7 @@ function viewMenu() {
   const count = state.dayCount?.[date] ?? 3;
 
   return `
+  ${planBanner()}
   ${calendarStrip()}
   <div class="day-head">
     <div><h1>${esc(rel || capital(weekday))}</h1><div class="date">${esc(rel ? capital(weekday) + ', ' : '')}${esc(d.toLocaleDateString('hu-HU', { month: 'long', day: 'numeric' }))}</div></div>
@@ -704,6 +736,8 @@ document.addEventListener('click', (e) => {
       break;
     }
     case 'shop-range': ui.shopRange = el.dataset.k; route(); break;
+    case 'load-plan': loadPlan(el.dataset.k); break;
+    case 'hide-plan': (state.hiddenPlans ||= []).push(el.dataset.k); save(); route(); break;
     case 'reset-ratio': state.settings.ratios = { ...DEFAULT_TARGET.ratios }; state.settings.tolerance = 0.1; state.settings.kcalTolerance = 0.05; save(); route(); break;
     case 'ov-reset': delete state.overrides[el.dataset.id]; save(); db = buildDb(); $('#ing-table').innerHTML = ingTable($('#ing-search').value); break;
     case 'export': {
@@ -783,4 +817,6 @@ document.addEventListener('change', (e) => {
   }
 });
 
+const urlPlan = new URLSearchParams(location.search).get('terv');
+if (urlPlan && PLANS[urlPlan] && !(state.loadedPlans || []).includes(urlPlan)) loadPlan(urlPlan);
 route();

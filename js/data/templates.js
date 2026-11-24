@@ -4148,6 +4148,595 @@ export const TEMPLATES = [
       "Morzsold rá a bacont ({hus}).",
       "Tálaláskor tedd rá: {extra}, és szórd meg az újhagyma zöld részével."
     ]
+  },
+  {
+    id: "csirke-kelbimbo",
+    name: "Serpenyős csirkecomb kelbimbóval és szalonnával",
+    cuisine: "magyaros",
+    meals: [
+      "foetel"
+    ],
+    method: "Serpenyő",
+    time: 30,
+    slots: [
+      {
+        key: "feh",
+        label: "Hús",
+        pick: [
+          1,
+          1
+        ],
+        options: [
+          "csirkecomb"
+        ]
+      },
+      {
+        key: "zsir",
+        label: "Zsiradék",
+        pick: [
+          1,
+          1
+        ],
+        options: [
+          "vaj",
+          "disznozsir"
+        ]
+      },
+      {
+        key: "extra",
+        label: "Plusz zöldség",
+        pick: [
+          0,
+          1
+        ],
+        options: [
+          "voroshagyma",
+          "gomba"
+        ]
+      },
+      {
+        key: "sajt",
+        label: "Sajt",
+        pick: [
+          0,
+          1
+        ],
+        options: [
+          "parmezan",
+          "gouda"
+        ]
+      }
+    ],
+    fixed: [
+      {
+        id: "kelbimbo"
+      },
+      {
+        id: "bacon"
+      },
+      {
+        id: "fokhagyma"
+      }
+    ],
+    ranges: {
+      csirkecomb: [
+        150,
+        190,
+        240
+      ],
+      kelbimbo: [
+        100,
+        170,
+        260
+      ],
+      bacon: [
+        20,
+        35,
+        50
+      ],
+      fokhagyma: [
+        3,
+        6,
+        10
+      ],
+      vaj: [
+        0,
+        10,
+        20
+      ],
+      disznozsir: [
+        0,
+        10,
+        20
+      ],
+      voroshagyma: [
+        20,
+        30,
+        50
+      ],
+      gomba: [
+        60,
+        100,
+        150
+      ],
+      parmezan: [
+        10,
+        15,
+        25
+      ],
+      gouda: [
+        15,
+        25,
+        40
+      ]
+    },
+    spices: "só, bors, majoranna",
+    steps: [
+      "Vágd félbe a kelbimbót, kockázd fel a szalonnát, vágd 3-4 cm-es darabokra a csirkecombot ({feh}), sózd, borsozd.",
+      "Nagy serpenyőben, közepes lángon süsd ropogósra a szalonnát, szedd ki, a zsírja maradjon a serpenyőben.",
+      "A szalonnazsíron és a zsiradékon ({zsir}) süsd a csirkét 8-10 percig, amíg minden oldala aranybarna és átsül, majd tedd félre.",
+      "Ugyanott a kelbimbót vágott felével lefelé pirítsd 5 percig, aztán önts alá 3 evőkanál vizet, és fedő alatt 4 percig párold roppanósra.",
+      "Pirítsd a kelbimbóval 3 percig: {extra}.",
+      "Forgasd vissza a csirkét és a szalonnát, add hozzá a zúzott fokhagymát, 1 percig forgasd át.",
+      "Tálaláskor szórd meg: {sajt}."
+    ]
+  },
+  {
+    id: "rakott-csirkes",
+    name: "Rakott brokkoli-karfiol csirkecombbal",
+    cuisine: "magyaros",
+    meals: [
+      "foetel"
+    ],
+    method: "Sütő",
+    time: 45,
+    slots: [
+      {
+        key: "feh",
+        label: "Hús",
+        pick: [
+          1,
+          1
+        ],
+        options: [
+          "csirkecomb"
+        ]
+      },
+      {
+        key: "zold",
+        label: "Plusz zöldség",
+        pick: [
+          0,
+          1
+        ],
+        options: [
+          "paprika",
+          "gomba"
+        ]
+      },
+      {
+        key: "sajt",
+        label: "Sajt",
+        pick: [
+          1,
+          1
+        ],
+        options: [
+          "gouda",
+          "cheddar",
+          "mozzarella"
+        ]
+      }
+    ],
+    fixed: [
+      {
+        id: "karfiol"
+      },
+      {
+        id: "brokkoli"
+      },
+      {
+        id: "tejfol"
+      },
+      {
+        id: "tojas"
+      },
+      {
+        id: "bacon"
+      },
+      {
+        id: "voroshagyma"
+      },
+      {
+        id: "fokhagyma"
+      },
+      {
+        id: "fuszerpaprika"
+      }
+    ],
+    ranges: {
+      csirkecomb: [
+        130,
+        170,
+        220
+      ],
+      karfiol: [
+        60,
+        120,
+        200
+      ],
+      brokkoli: [
+        50,
+        100,
+        170
+      ],
+      tejfol: [
+        30,
+        50,
+        80
+      ],
+      tojas: [
+        50,
+        50,
+        50
+      ],
+      bacon: [
+        0,
+        20,
+        35
+      ],
+      voroshagyma: [
+        10,
+        20,
+        30
+      ],
+      fokhagyma: [
+        3,
+        5,
+        8
+      ],
+      fuszerpaprika: [
+        2,
+        3,
+        5
+      ],
+      paprika: [
+        30,
+        50,
+        80
+      ],
+      gomba: [
+        50,
+        80,
+        120
+      ],
+      gouda: [
+        20,
+        35,
+        50
+      ],
+      cheddar: [
+        20,
+        30,
+        45
+      ],
+      mozzarella: [
+        30,
+        45,
+        70
+      ]
+    },
+    spices: "só, bors, majoranna",
+    steps: [
+      "Melegítsd elő a sütőt 200 °C-ra. A fagyasztott brokkolit és karfiolt 4 percig főzd elő, csepegtesd le alaposan.",
+      "A szalonnát pirítsd ki, a zsírján süsd üvegesre a hagymát, add hozzá a falatnyi csirkecombot ({feh}), a fokhagymát és a fűszerpaprikát, és 6-8 percig pirítsd.",
+      "Pirítsd a csirkével 3 percig: {zold}.",
+      "Keverd ki a tejfölt a tojással, sóval, borssal.",
+      "Rétegezd egy kis tepsibe: zöldség, csirke, zöldség, tejfölös öntet, a tetejére a reszelt sajt ({sajt}).",
+      "Süsd 20-25 percig, amíg a teteje aranybarna."
+    ]
+  },
+  {
+    id: "lecso-csirke",
+    name: "Kápiás lecsó csirkecombbal és tojással",
+    cuisine: "magyaros",
+    meals: [
+      "foetel"
+    ],
+    method: "Lábas",
+    time: 30,
+    slots: [
+      {
+        key: "feh",
+        label: "Hús",
+        pick: [
+          1,
+          1
+        ],
+        options: [
+          "csirkecomb",
+          "tarja"
+        ]
+      },
+      {
+        key: "zold",
+        label: "Plusz zöldség",
+        pick: [
+          0,
+          1
+        ],
+        options: [
+          "cukkini"
+        ]
+      },
+      {
+        key: "zsir",
+        label: "Zsiradék",
+        pick: [
+          1,
+          1
+        ],
+        options: [
+          "disznozsir",
+          "vaj",
+          "olivaolaj"
+        ]
+      },
+      {
+        key: "extra",
+        label: "Tálaláshoz",
+        pick: [
+          0,
+          1
+        ],
+        options: [
+          "tejfol"
+        ]
+      }
+    ],
+    fixed: [
+      {
+        id: "paprika"
+      },
+      {
+        id: "paradicsom"
+      },
+      {
+        id: "voroshagyma"
+      },
+      {
+        id: "tojas"
+      },
+      {
+        id: "bacon"
+      },
+      {
+        id: "fuszerpaprika"
+      }
+    ],
+    ranges: {
+      csirkecomb: [
+        130,
+        170,
+        220
+      ],
+      tarja: [
+        120,
+        150,
+        200
+      ],
+      paprika: [
+        80,
+        130,
+        200
+      ],
+      paradicsom: [
+        50,
+        80,
+        130
+      ],
+      voroshagyma: [
+        15,
+        30,
+        50
+      ],
+      tojas: [
+        50,
+        100,
+        100
+      ],
+      bacon: [
+        0,
+        20,
+        30
+      ],
+      fuszerpaprika: [
+        2,
+        3,
+        5
+      ],
+      cukkini: [
+        60,
+        100,
+        150
+      ],
+      disznozsir: [
+        0,
+        10,
+        20
+      ],
+      vaj: [
+        0,
+        10,
+        20
+      ],
+      olivaolaj: [
+        0,
+        10,
+        20
+      ],
+      tejfol: [
+        20,
+        30,
+        50
+      ]
+    },
+    spices: "só, bors, csipet chili",
+    steps: [
+      "Kockázd fel a szalonnát, vágd falatnyira a húst ({feh}), csíkozd fel a kápiát és a hagymát, cikkezd a paradicsomot.",
+      "A zsiradékon ({zsir}) pirítsd ki a szalonnát, add hozzá a hagymát, és 3 percig dinszteld.",
+      "Tedd bele a húst, 6-8 percig pirítsd, húzd le a tűzről, és szórd meg fűszerpaprikával.",
+      "Add hozzá a kápiát, és fedő alatt 8 percig párold.",
+      "Tedd bele a felkarikázott zöldséget, és 4 percig párold: {zold}.",
+      "Add hozzá a paradicsomot, 5 percig főzd, majd üsd bele a tojásokat, és kevergetve 2 percig sűrítsd.",
+      "Tálald ezzel: {extra}."
+    ]
+  },
+  {
+    id: "szalonnas-rantotta",
+    name: "Szalonnás-kápiás rántotta goudával",
+    cuisine: "klasszikus",
+    meals: [
+      "reggeli"
+    ],
+    method: "Serpenyő",
+    time: 12,
+    slots: [
+      {
+        key: "feh",
+        label: "Tojás",
+        pick: [
+          1,
+          1
+        ],
+        options: [
+          "tojas"
+        ]
+      },
+      {
+        key: "zold",
+        label: "Zöldség",
+        pick: [
+          1,
+          2
+        ],
+        options: [
+          "paprika",
+          "cukkini",
+          "voroshagyma",
+          "ujhagyma",
+          "paradicsom"
+        ]
+      },
+      {
+        key: "sajt",
+        label: "Sajt",
+        pick: [
+          1,
+          1
+        ],
+        options: [
+          "gouda",
+          "cheddar"
+        ]
+      },
+      {
+        key: "friss",
+        label: "Friss zöld",
+        pick: [
+          1,
+          1
+        ],
+        options: [
+          "romai",
+          "uborka",
+          "retek"
+        ]
+      }
+    ],
+    fixed: [
+      {
+        id: "bacon"
+      },
+      {
+        id: "vaj"
+      }
+    ],
+    ranges: {
+      tojas: [
+        100,
+        150,
+        200
+      ],
+      bacon: [
+        20,
+        30,
+        45
+      ],
+      vaj: [
+        0,
+        5,
+        10
+      ],
+      paprika: [
+        40,
+        80,
+        140
+      ],
+      cukkini: [
+        50,
+        100,
+        160
+      ],
+      voroshagyma: [
+        10,
+        20,
+        30
+      ],
+      ujhagyma: [
+        10,
+        15,
+        25
+      ],
+      paradicsom: [
+        50,
+        80,
+        120
+      ],
+      gouda: [
+        15,
+        25,
+        40
+      ],
+      cheddar: [
+        15,
+        25,
+        35
+      ],
+      romai: [
+        30,
+        60,
+        120
+      ],
+      uborka: [
+        50,
+        100,
+        160
+      ],
+      retek: [
+        30,
+        60,
+        120
+      ]
+    },
+    spices: "só, bors, csipet füstölt paprika",
+    steps: [
+      "Kockázd fel a szalonnát, és közepes lángon süsd ropogósra.",
+      "A zsírján 3-4 percig pirítsd a felvágott zöldséget ({zold}).",
+      "Verd fel a tojásokat ({feh}) sóval, borssal, öntsd a serpenyőbe, és alacsony lángon, lassan kevergetve süsd krémesre. A végén keverd bele a vajat.",
+      "Reszeld rá a sajtot ({sajt}), és hagyd, hogy ráolvadjon.",
+      "Tálald friss zölddel: {friss}."
+    ]
   }
 ];
 
