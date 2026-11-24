@@ -71,15 +71,17 @@ body { font-family: "Segoe UI", Inter, Arial, sans-serif; color: var(--ink); fon
 .page:last-child { break-after: auto; }
 .foot { position: absolute; bottom: 7mm; left: 14mm; right: 14mm; display: flex; justify-content: space-between; font-size: 6.8pt; color: var(--mute); letter-spacing: .14em; text-transform: uppercase; }
 .kicker { font-size: 8pt; letter-spacing: .25em; text-transform: uppercase; color: var(--acc); font-weight: 700; }
-.cover h1 { font-size: 58pt; line-height: .95; font-weight: 800; letter-spacing: -.045em; margin: 4mm 0 3mm; }
-.cover .dates { font-size: 13pt; color: var(--mute); margin-bottom: 8mm; }
-.mosaic { display: grid; grid-template-columns: 24mm repeat(3, 1fr); grid-auto-rows: 1fr; gap: 1.6mm; flex: 1; min-height: 0; }
+.cover { padding: 10mm 10mm 14mm; }
+.cover .foot { left: 10mm; right: 10mm; }
+.cover h1 { font-size: 44pt; line-height: .95; font-weight: 800; letter-spacing: -.045em; margin: 2mm 0 1.5mm; }
+.cover .dates { font-size: 12pt; color: var(--mute); margin-bottom: 4mm; }
+.mosaic { display: grid; grid-template-columns: 17mm repeat(3, 1fr); grid-template-rows: auto repeat(7, 1fr); gap: 1.2mm; flex: 1; min-height: 0; }
 .mosaic .h { font-size: 7pt; letter-spacing: .2em; text-transform: uppercase; color: var(--mute); align-self: end; }
-.mosaic .d { display: flex; flex-direction: column; justify-content: center; border-top: 2px solid var(--ink); font-weight: 800; font-size: 10pt; text-transform: capitalize; }
+.mosaic .d { display: flex; flex-direction: column; justify-content: center; border-top: 2px solid var(--ink); font-weight: 800; font-size: 9pt; text-transform: capitalize; }
 .mosaic .d small { font-weight: 400; color: var(--mute); font-size: 7.5pt; }
 .mosaic img { width: 100%; height: 100%; object-fit: cover; display: block; min-height: 0; }
-.stats { display: flex; gap: 12mm; margin-top: 7mm; border-top: 2px solid var(--ink); padding-top: 3mm; }
-.stats b { display: block; font-size: 18pt; font-weight: 800; letter-spacing: -.02em; }
+.stats { display: flex; gap: 12mm; margin-top: 4mm; border-top: 2px solid var(--ink); padding-top: 3mm; }
+.stats b { display: block; font-size: 15pt; font-weight: 800; letter-spacing: -.02em; }
 .stats span { font-size: 7pt; color: var(--mute); text-transform: uppercase; letter-spacing: .14em; }
 .shop-h { font-size: 30pt; font-weight: 800; letter-spacing: -.035em; margin: 3mm 0 7mm; }
 .trip { margin-bottom: 8mm; }
