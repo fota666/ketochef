@@ -1,4 +1,4 @@
-// Nyomtatható menü (PDF) egy ajánlott tervből: bevásárlólisták, majd naponként a receptek képpel.
+// Nyomtatható menü (PDF) egy ajánlott tervből: borító, bevásárlólisták, oldalanként két nap képekkel.
 // Használat: node scripts/make-pdf.mjs [tervkulcs] [kimenet.pdf]
 import { writeFileSync, mkdirSync, readdirSync, copyFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -7,9 +7,7 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { PLANS } from '../js/data/plans.js';
 import { BY_ID, CATEGORIES } from '../js/data/ingredients.js';
-import { TEMPLATE_BY_ID } from '../js/data/templates.js';
 import { validate } from '../js/engine/macros.js';
-import { renderSteps } from '../js/engine/generator.js';
 
 const KEY = process.argv[2] || 'lidl48-v3';
 const OUT = resolve(process.argv[3] || '../ketochef-menu.pdf');
@@ -19,12 +17,15 @@ const WD = ['vasárnap', 'hétfő', 'kedd', 'szerda', 'csütörtök', 'péntek',
 const pl = PLANS[KEY];
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const nf = (x, d = 0) => x.toLocaleString('hu-HU', { maximumFractionDigits: d, minimumFractionDigits: d });
-const day = (d) => { const x = new Date(d + 'T12:00:00'); return `${x.getMonth() + 1}.${String(x.getDate()).padStart(2, '0')}. ${WD[x.getDay()]}`; };
-function qty(id, g, shop) {
+const mdOf = (d) => { const x = new Date(d + 'T12:00:00'); return `${x.getMonth() + 1}.${String(x.getDate()).padStart(2, '0')}.`; };
+const wdOf = (d) => WD[new Date(d + 'T12:00:00').getDay()];
+const short = (id) => BY_ID[id].name.split(',')[0].replace(/\s*\(.*\)/, '').replace(/\s+\d+%.*$/, '').toLowerCase();
+
+function qty(id, g) {
   const u = BY_ID[id].unit;
-  if (u) return `${shop ? Math.ceil(g / u.g - 0.05) : nf(g / u.g, Number.isInteger(g / u.g) ? 0 : 1)} ${u.name}`;
-  if (shop && g >= 1000) return `${nf(Math.ceil(g / 100) / 10, 1)} kg`;
-  return `${nf(shop ? Math.ceil(g / 10) * 10 : g)} g`;
+  if (u) return `${Math.ceil(g / u.g - 0.05)} ${u.name}`;
+  if (g >= 1000) return `${nf(Math.ceil(g / 100) / 10, 1)} kg`;
+  return `${nf(Math.ceil(g / 10) * 10)} g`;
 }
 
 function shopList(t) {
@@ -34,74 +35,108 @@ function shopList(t) {
   (t.also?.days || []).forEach((d) => add(d, (id) => !t.also.except.includes(id)));
   const groups = {};
   for (const [id, g] of Object.entries(sums)) (groups[BY_ID[id].cat] ||= []).push([id, g]);
-  return `<section class="shop"><h2>Bevásárlás ${esc(t.label)}</h2><p class="note">${esc(t.note || '')}</p><div class="cols">
-  ${Object.keys(CATEGORIES).filter((c) => groups[c]).map((c) => `<div class="grp"><h4>${esc(CATEGORIES[c])}</h4>${groups[c].sort((a, b) => BY_ID[a[0]].name.localeCompare(BY_ID[b[0]].name, 'hu')).map(([id, g]) => `<div class="row"><span>☐ ${esc(BY_ID[id].name)}</span><b>${qty(id, g, true)}</b></div>`).join('')}</div>`).join('')}
+  return `<section class="trip"><h2><span style="text-transform:capitalize">${wdOf(t.date)}</span> ${mdOf(t.date)}<small>${esc(t.note || '')}</small></h2><div class="cols">
+  ${Object.keys(CATEGORIES).filter((c) => groups[c]).map((c) => `<div class="grp"><h4>${esc(CATEGORIES[c])}</h4>${groups[c].sort((a, b) => short(a[0]).localeCompare(short(b[0]), 'hu')).map(([id, g]) => `<div class="it"><span>${esc(short(id))}</span><b>${qty(id, g)}</b></div>`).join('')}</div>`).join('')}
   </div></section>`;
 }
 
-function recipe(r, i) {
-  const v = validate(r.items, BY_ID, r.kcalTarget);
-  const n = v.nutrition;
-  const t = TEMPLATE_BY_ID[r.templateId];
-  const ppl = PEOPLE[i];
-  const img = `img/${r.templateId}.jpg`;
-  return `<article class="rec">
-  <img src="${img}" alt="">
-  <div class="body">
-    <div class="eyebrow">${MEAL[i]} · ${r.time} perc · ${esc(r.method)}</div>
+const kcalOf = (r) => validate(r.items, BY_ID, r.kcalTarget).nutrition;
+function card(r, i) {
+  const n = kcalOf(r);
+  const ings = [...new Set(r.items.filter((it) => it.g > 0).map((it) => short(it.id)))];
+  return `<article class="card">
+    <div class="ph"><img src="img/${r.templateId}.jpg" alt=""><span class="tag">${MEAL[i]}${PEOPLE[i] > 1 ? ` · ${PEOPLE[i]} fő` : ''}</span></div>
     <h3>${esc(r.name)}</h3>
-    <div class="mac"><b>${nf(n.kcal)} kcal</b> · fehérje ${nf(n.p)} g · zsír ${nf(n.f)} g · szénhidrát ${nf(n.c, 1)} g <span>(${v.status === 'PASS' ? 'makró OK' : v.status})</span></div>
-    <table class="ing"><tr><th></th><th>Neked</th>${ppl > 1 ? `<th>${ppl} főre</th>` : ''}</tr>
-    ${r.items.filter((it) => it.g > 0).map((it) => `<tr><td>${esc(BY_ID[it.id].name)}</td><td>${qty(it.id, it.g)}</td>${ppl > 1 ? `<td>${qty(it.id, it.g * ppl)}</td>` : ''}</tr>`).join('')}
-    </table>
-    ${t?.spices ? `<p class="spice">+ ${esc(t.spices)}</p>` : ''}
-    <ol>${renderSteps(r, BY_ID).map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
-  </div></article>`;
+    <div class="mac"><b>${nf(n.kcal)}</b> kcal<i>F ${nf(n.p)}</i><i>Zs ${nf(n.f)}</i><i>Sz ${nf(n.c)}</i></div>
+    <p class="ings">${esc(ings.join(', '))}</p>
+  </article>`;
 }
 
 const days = Object.entries(pl.days);
+const dayKcal = (rs) => rs.reduce((a, r) => a + kcalOf(r).kcal, 0);
+const dayBlock = ([d, rs]) => `<section class="day">
+  <header><span class="wd">${wdOf(d)}</span><span class="md">${mdOf(d)}</span><span class="dk">${nf(dayKcal(rs))} kcal</span></header>
+  <div class="row3">${rs.map(card).join('')}</div></section>`;
+const pairs = [];
+for (let i = 0; i < days.length; i += 2) pairs.push(days.slice(i, i + 2));
+const kc = days.map(([, rs]) => dayKcal(rs));
+const foot = (n) => `<div class="foot"><span>Reggeli 1 főre · ebéd, vacsora 2 főre</span><span>${n}</span></div>`;
+
 const html = `<!doctype html><html lang="hu"><head><meta charset="utf-8"><title>${esc(pl.title)}</title><style>
-@page { size: A4; margin: 12mm; }
-* { box-sizing: border-box; }
-body { font-family: Inter, "Segoe UI", Arial, sans-serif; color: #111; font-size: 9.5pt; line-height: 1.35; margin: 0; }
-h1 { font-size: 22pt; margin: 0 0 2mm; letter-spacing: -.02em; }
-h2 { font-size: 14pt; margin: 0 0 1mm; border-bottom: 2px solid #111; padding-bottom: 1mm; }
-.sub { color: #555; margin: 0 0 5mm; }
-table.over { width: 100%; border-collapse: collapse; margin-bottom: 6mm; }
-table.over th, table.over td { border: 1px solid #ccc; padding: 1.5mm 2mm; text-align: left; vertical-align: top; }
-table.over th { background: #111; color: #fff; font-weight: 600; }
-.shop { break-inside: avoid; margin-bottom: 6mm; }
-.note { color: #555; margin: 1mm 0 2mm; }
-.cols { columns: 2; column-gap: 8mm; }
-.grp { break-inside: avoid; margin-bottom: 3mm; }
-.grp h4 { font-size: 8pt; text-transform: uppercase; letter-spacing: .06em; color: #1a7f37; margin: 0 0 1mm; }
-.row { display: flex; justify-content: space-between; border-bottom: 1px dotted #bbb; padding: .6mm 0; }
-.day { break-before: page; }
-.day h2 { margin-bottom: 4mm; }
-.rec { display: flex; gap: 5mm; break-inside: avoid; margin-bottom: 5mm; padding-bottom: 4mm; border-bottom: 1px solid #ddd; }
-.rec img { width: 42mm; height: 42mm; object-fit: cover; flex: none; }
-.rec .body { flex: 1; min-width: 0; }
-.eyebrow { font-size: 7.5pt; text-transform: uppercase; letter-spacing: .08em; color: #1a7f37; font-weight: 700; }
-.rec h3 { font-size: 12.5pt; margin: .5mm 0 1mm; }
-.mac { margin-bottom: 1.5mm; } .mac span { color: #1a7f37; }
-table.ing { border-collapse: collapse; margin-bottom: 1mm; }
-table.ing td, table.ing th { padding: .3mm 4mm .3mm 0; text-align: left; }
-table.ing th { font-size: 7.5pt; color: #555; font-weight: 600; }
-table.ing td:not(:first-child) { font-variant-numeric: tabular-nums; white-space: nowrap; }
-.spice { color: #555; margin: 0 0 1mm; }
-ol { margin: 1mm 0 0; padding-left: 4.5mm; } li { margin-bottom: .6mm; }
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --ink: #111; --mute: #777; --line: #e3e3e3; --acc: #1a7f37; }
+body { font-family: "Segoe UI", Inter, Arial, sans-serif; color: var(--ink); font-size: 9pt; line-height: 1.35; }
+.page { width: 210mm; height: 297mm; padding: 14mm 14mm 16mm; break-after: page; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+.page:last-child { break-after: auto; }
+.foot { position: absolute; bottom: 7mm; left: 14mm; right: 14mm; display: flex; justify-content: space-between; font-size: 6.8pt; color: var(--mute); letter-spacing: .14em; text-transform: uppercase; }
+.kicker { font-size: 8pt; letter-spacing: .25em; text-transform: uppercase; color: var(--acc); font-weight: 700; }
+.cover h1 { font-size: 58pt; line-height: .95; font-weight: 800; letter-spacing: -.045em; margin: 4mm 0 3mm; }
+.cover .dates { font-size: 13pt; color: var(--mute); margin-bottom: 8mm; }
+.mosaic { display: grid; grid-template-columns: 24mm repeat(3, 1fr); grid-auto-rows: 1fr; gap: 1.6mm; flex: 1; min-height: 0; }
+.mosaic .h { font-size: 7pt; letter-spacing: .2em; text-transform: uppercase; color: var(--mute); align-self: end; }
+.mosaic .d { display: flex; flex-direction: column; justify-content: center; border-top: 2px solid var(--ink); font-weight: 800; font-size: 10pt; text-transform: capitalize; }
+.mosaic .d small { font-weight: 400; color: var(--mute); font-size: 7.5pt; }
+.mosaic img { width: 100%; height: 100%; object-fit: cover; display: block; min-height: 0; }
+.stats { display: flex; gap: 12mm; margin-top: 7mm; border-top: 2px solid var(--ink); padding-top: 3mm; }
+.stats b { display: block; font-size: 18pt; font-weight: 800; letter-spacing: -.02em; }
+.stats span { font-size: 7pt; color: var(--mute); text-transform: uppercase; letter-spacing: .14em; }
+.shop-h { font-size: 30pt; font-weight: 800; letter-spacing: -.035em; margin: 3mm 0 7mm; }
+.trip { margin-bottom: 8mm; }
+.trip h2 { display: flex; align-items: baseline; gap: 4mm; font-size: 16pt; font-weight: 800; border-bottom: 2px solid var(--ink); padding-bottom: 1.5mm; }
+.trip h2 small { font-size: 8.5pt; font-weight: 400; color: var(--mute); }
+.cols { columns: 3; column-gap: 7mm; margin-top: 3.5mm; }
+.grp { break-inside: avoid; margin-bottom: 3.5mm; }
+.grp h4 { font-size: 6.8pt; text-transform: uppercase; letter-spacing: .16em; color: var(--acc); margin-bottom: .8mm; }
+.it { display: flex; justify-content: space-between; gap: 2mm; padding: .6mm 0; border-bottom: 1px solid var(--line); }
+.it b { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.it span::first-letter { text-transform: uppercase; }
+.it span::before { content: ""; display: inline-block; width: 2.4mm; height: 2.4mm; border: 1px solid var(--ink); margin-right: 1.8mm; vertical-align: -.3mm; }
+.day { flex: 1; display: flex; flex-direction: column; }
+.day + .day { margin-top: 6mm; }
+.day header { display: flex; align-items: baseline; gap: 3mm; border-bottom: 2px solid var(--ink); padding-bottom: 1.5mm; margin-bottom: 4mm; }
+.wd { font-size: 26pt; font-weight: 800; letter-spacing: -.035em; text-transform: capitalize; }
+.md { font-size: 12pt; color: var(--mute); }
+.dk { margin-left: auto; font-size: 9pt; font-weight: 600; }
+.row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; }
+.ph { position: relative; aspect-ratio: 1; overflow: hidden; margin-bottom: 2.5mm; }
+.ph img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tag { position: absolute; left: 0; top: 0; background: var(--ink); color: #fff; font-size: 6.6pt; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; padding: 1.2mm 2.2mm; }
+.card h3 { font-size: 10.5pt; font-weight: 700; line-height: 1.2; letter-spacing: -.01em; margin-bottom: 1.2mm; min-height: 2.4em; }
+.mac { font-size: 7.8pt; margin-bottom: 1.4mm; }
+.mac b { font-size: 10pt; }
+.mac i { font-style: normal; color: var(--mute); margin-left: 2.2mm; }
+.ings { font-size: 7.8pt; color: #555; }
 </style></head><body>
-<h1>${esc(pl.title)}</h1>
-<p class="sub">${day(days[0][0])} – ${day(days[days.length - 1][0])} · Reggeli 1 főre, ebéd és vacsora 2 főre · minden adag makróellenőrzött (zsír 66%, fehérje 27%, szénhidrát 6%)</p>
-<table class="over"><tr><th>Nap</th>${MEAL.map((m) => `<th>${m}</th>`).join('')}</tr>
-${days.map(([d, rs]) => `<tr><td><b>${day(d)}</b></td>${rs.map((r) => `<td>${esc(r.name)}</td>`).join('')}</tr>`).join('')}</table>
-${(pl.trips || []).map(shopList).join('')}
-${days.map(([d, rs]) => `<section class="day"><h2>${day(d)}</h2>${rs.map(recipe).join('')}</section>`).join('')}
+
+<div class="page cover">
+  <div class="kicker">KetoChef · Lidl akciós hét</div>
+  <h1>Keto hét</h1>
+  <div class="dates">${mdOf(days[0][0])} ${wdOf(days[0][0])} – ${mdOf(days[days.length - 1][0])} ${wdOf(days[days.length - 1][0])}</div>
+  <div class="mosaic">
+    <div></div>${MEAL.map((m) => `<div class="h">${m}</div>`).join('')}
+    ${days.map(([d, rs]) => `<div class="d">${wdOf(d)}<small>${mdOf(d)}</small></div>${rs.map((r) => `<img src="img/${r.templateId}.jpg" alt="">`).join('')}`).join('')}
+  </div>
+  <div class="stats">
+    <div><b>${nf(Math.min(...kc))}–${nf(Math.max(...kc))}</b><span>kcal naponta</span></div>
+    <div><b>66 / 27 / 6</b><span>zsír / fehérje / szénh. %</span></div>
+    <div><b>${days.length * 3}</b><span>étel, mind makró OK</span></div>
+  </div>
+  ${foot(1)}
+</div>
+
+<div class="page">
+  <div class="kicker">Lidl</div>
+  <div class="shop-h">Bevásárlás</div>
+  ${(pl.trips || []).map(shopList).join('')}
+  ${foot(2)}
+</div>
+
+${pairs.map((pp, k) => `<div class="page">${pp.map(dayBlock).join('')}${foot(k + 3)}</div>`).join('')}
 </body></html>`;
 
 // Ékezetmentes ideiglenes mappában, külön Chrome-profillal (a futó böngészőt nem zavarja)
 const dir = resolve(tmpdir(), 'ketochef-print');
-mkdirSync(dir, { recursive: true });
 mkdirSync(resolve(dir, 'img'), { recursive: true });
 for (const f of readdirSync('img')) copyFileSync(resolve('img', f), resolve(dir, 'img', f)); // cpSync összeomlik ékezetes útvonalon
 writeFileSync(resolve(dir, 'menu.html'), html);
