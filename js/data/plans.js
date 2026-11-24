@@ -1,8 +1,8 @@
 // Generálva: scripts/make-plan.mjs
 export const PLANS = {
-  "lidl48": {
-    "title": "Lidl akciós menü",
-    "subtitle": "11.26. csütörtök – 11.29. vasárnap, csirkecomb, szalonna, kelbimbó, brokkoli-karfiol, kápia, cukkini, gouda",
+  "lidl48-7nap": {
+    "title": "Lidl akciós menü, 7 nap",
+    "subtitle": "11.26. csütörtök – 12.02. szerda. Vasárnapig vásárolj, a csirkét és a szalonnát adagolva fagyaszd le.",
     "days": {
       "2026-11-26": [
         {
@@ -663,6 +663,513 @@ export const PLANS = {
           ],
           "createdAt": "2026-11-24T00:00:00.000Z",
           "taste": 9.574881403172906
+        }
+      ],
+      "2026-11-30": [
+        {
+          "id": "lidl48-2026-11-30-0",
+          "templateId": "szalonnas-rantotta",
+          "name": "Szalonnás-kápiás rántotta goudával",
+          "cuisine": "klasszikus",
+          "method": "Serpenyő",
+          "time": 12,
+          "mealType": "reggeli",
+          "kcalTarget": 550,
+          "items": [
+            {
+              "id": "tojas",
+              "g": 200,
+              "slot": "feh"
+            },
+            {
+              "id": "paprika",
+              "g": 110,
+              "slot": "zold"
+            },
+            {
+              "id": "romai",
+              "g": 70,
+              "slot": "friss"
+            },
+            {
+              "id": "bacon",
+              "g": 30,
+              "slot": "fix"
+            },
+            {
+              "id": "gouda",
+              "g": 25,
+              "slot": "sajt"
+            },
+            {
+              "id": "ujhagyma",
+              "g": 15,
+              "slot": "zold"
+            },
+            {
+              "id": "vaj",
+              "g": 4,
+              "slot": "fix"
+            }
+          ],
+          "createdAt": "2026-11-24T00:00:00.000Z",
+          "taste": 9.284654404913905
+        },
+        {
+          "id": "lidl48-2026-11-30-1",
+          "templateId": "paprikas",
+          "name": "Paprikás csirke",
+          "cuisine": "magyaros",
+          "method": "Lábas",
+          "time": 45,
+          "mealType": "foetel",
+          "kcalTarget": 675,
+          "items": [
+            {
+              "id": "csirkecomb",
+              "g": 210,
+              "slot": "feh"
+            },
+            {
+              "id": "karfiol",
+              "g": 90,
+              "slot": "koret"
+            },
+            {
+              "id": "tejfol",
+              "g": 75,
+              "slot": "fix"
+            },
+            {
+              "id": "zoldpaprika",
+              "g": 40,
+              "slot": "fix"
+            },
+            {
+              "id": "paradicsom",
+              "g": 40,
+              "slot": "fix"
+            },
+            {
+              "id": "tejszin",
+              "g": 35,
+              "slot": "fix"
+            },
+            {
+              "id": "voroshagyma",
+              "g": 25,
+              "slot": "fix"
+            },
+            {
+              "id": "vaj",
+              "g": 15,
+              "slot": "zsir"
+            },
+            {
+              "id": "fuszerpaprika",
+              "g": 3,
+              "slot": "fix"
+            }
+          ],
+          "createdAt": "2026-11-24T00:00:00.000Z",
+          "taste": 9.354600971753763
+        },
+        {
+          "id": "lidl48-2026-11-30-2",
+          "templateId": "wok",
+          "name": "Fokhagymás-gyömbéres wok",
+          "cuisine": "azsiai",
+          "method": "Wok",
+          "time": 20,
+          "mealType": "foetel",
+          "kcalTarget": 675,
+          "items": [
+            {
+              "id": "csirkecomb",
+              "g": 200,
+              "slot": "feh"
+            },
+            {
+              "id": "brokkoli",
+              "g": 80,
+              "slot": "zold"
+            },
+            {
+              "id": "paprika",
+              "g": 60,
+              "slot": "zold"
+            },
+            {
+              "id": "majonez",
+              "g": 21,
+              "slot": "szosz"
+            },
+            {
+              "id": "ujhagyma",
+              "g": 20,
+              "slot": "friss"
+            },
+            {
+              "id": "szojaszosz",
+              "g": 15,
+              "slot": "fix"
+            },
+            {
+              "id": "mandula",
+              "g": 15,
+              "slot": "ropi"
+            },
+            {
+              "id": "napraforgoolaj",
+              "g": 13,
+              "slot": "zsir"
+            },
+            {
+              "id": "fokhagyma",
+              "g": 7,
+              "slot": "fix"
+            },
+            {
+              "id": "gyomber",
+              "g": 5,
+              "slot": "fix"
+            },
+            {
+              "id": "szezamolaj",
+              "g": 5,
+              "slot": "fix"
+            }
+          ],
+          "createdAt": "2026-11-24T00:00:00.000Z",
+          "taste": 9.055161722218308
+        }
+      ],
+      "2026-12-01": [
+        {
+          "id": "lidl48-2026-12-01-0",
+          "templateId": "omlett",
+          "name": "Gombás-sajtos omlett",
+          "cuisine": "klasszikus",
+          "method": "Serpenyő",
+          "time": 15,
+          "mealType": "reggeli",
+          "kcalTarget": 550,
+          "items": [
+            {
+              "id": "tojas",
+              "g": 200,
+              "slot": "feh"
+            },
+            {
+              "id": "gomba",
+              "g": 150,
+              "slot": "fix"
+            },
+            {
+              "id": "koktelparadicsom",
+              "g": 100,
+              "slot": "zold"
+            },
+            {
+              "id": "gouda",
+              "g": 35,
+              "slot": "sajt"
+            },
+            {
+              "id": "vaj",
+              "g": 12,
+              "slot": "fix"
+            }
+          ],
+          "createdAt": "2026-11-24T00:00:00.000Z",
+          "taste": 9.317434811189834
+        },
+        {
+          "id": "lidl48-2026-12-01-1",
+          "templateId": "csirke-kelbimbo",
+          "name": "Serpenyős csirkecomb kelbimbóval és szalonnával",
+          "cuisine": "magyaros",
+          "method": "Serpenyő",
+          "time": 30,
+          "mealType": "foetel",
+          "kcalTarget": 675,
+          "items": [
+            {
+              "id": "csirkecomb",
+              "g": 150,
+              "slot": "feh"
+            },
+            {
+              "id": "kelbimbo",
+              "g": 110,
+              "slot": "fix"
+            },
+            {
+              "id": "gomba",
+              "g": 70,
+              "slot": "extra"
+            },
+            {
+              "id": "bacon",
+              "g": 50,
+              "slot": "fix"
+            },
+            {
+              "id": "vaj",
+              "g": 20,
+              "slot": "zsir"
+            },
+            {
+              "id": "parmezan",
+              "g": 15,
+              "slot": "sajt"
+            },
+            {
+              "id": "fokhagyma",
+              "g": 6,
+              "slot": "fix"
+            }
+          ],
+          "createdAt": "2026-11-24T00:00:00.000Z",
+          "taste": 9.928747891058086
+        },
+        {
+          "id": "lidl48-2026-12-01-2",
+          "templateId": "sutos-csirke",
+          "name": "Tepsis csirke sült mediterrán zöldségekkel",
+          "cuisine": "mediterran",
+          "method": "Sütő",
+          "time": 40,
+          "mealType": "foetel",
+          "kcalTarget": 675,
+          "items": [
+            {
+              "id": "csirkecomb",
+              "g": 165,
+              "slot": "feh"
+            },
+            {
+              "id": "brokkoli",
+              "g": 80,
+              "slot": "zold"
+            },
+            {
+              "id": "mozzarella",
+              "g": 70,
+              "slot": "sajt"
+            },
+            {
+              "id": "paprika",
+              "g": 60,
+              "slot": "zold"
+            },
+            {
+              "id": "feketeoliva",
+              "g": 30,
+              "slot": "extra"
+            },
+            {
+              "id": "lilahagyma",
+              "g": 25,
+              "slot": "hagyma"
+            },
+            {
+              "id": "olivaolaj",
+              "g": 24,
+              "slot": "zsir"
+            },
+            {
+              "id": "fokhagyma",
+              "g": 7,
+              "slot": "fix"
+            }
+          ],
+          "createdAt": "2026-11-24T00:00:00.000Z",
+          "taste": 9.379241343309554
+        }
+      ],
+      "2026-12-02": [
+        {
+          "id": "lidl48-2026-12-02-0",
+          "templateId": "szalonnas-rantotta",
+          "name": "Szalonnás-kápiás rántotta goudával",
+          "cuisine": "klasszikus",
+          "method": "Serpenyő",
+          "time": 12,
+          "mealType": "reggeli",
+          "kcalTarget": 550,
+          "items": [
+            {
+              "id": "tojas",
+              "g": 200,
+              "slot": "feh"
+            },
+            {
+              "id": "uborka",
+              "g": 110,
+              "slot": "friss"
+            },
+            {
+              "id": "cukkini",
+              "g": 100,
+              "slot": "zold"
+            },
+            {
+              "id": "bacon",
+              "g": 30,
+              "slot": "fix"
+            },
+            {
+              "id": "gouda",
+              "g": 25,
+              "slot": "sajt"
+            },
+            {
+              "id": "ujhagyma",
+              "g": 15,
+              "slot": "zold"
+            },
+            {
+              "id": "vaj",
+              "g": 4,
+              "slot": "fix"
+            }
+          ],
+          "createdAt": "2026-11-24T00:00:00.000Z",
+          "taste": 9.305918036255909
+        },
+        {
+          "id": "lidl48-2026-12-02-1",
+          "templateId": "rakott-csirkes",
+          "name": "Rakott brokkoli-karfiol csirkecombbal",
+          "cuisine": "magyaros",
+          "method": "Sütő",
+          "time": 45,
+          "mealType": "foetel",
+          "kcalTarget": 675,
+          "items": [
+            {
+              "id": "csirkecomb",
+              "g": 130,
+              "slot": "feh"
+            },
+            {
+              "id": "tejfol",
+              "g": 80,
+              "slot": "fix"
+            },
+            {
+              "id": "karfiol",
+              "g": 60,
+              "slot": "fix"
+            },
+            {
+              "id": "brokkoli",
+              "g": 50,
+              "slot": "fix"
+            },
+            {
+              "id": "tojas",
+              "g": 50,
+              "slot": "fix"
+            },
+            {
+              "id": "gomba",
+              "g": 50,
+              "slot": "zold"
+            },
+            {
+              "id": "bacon",
+              "g": 35,
+              "slot": "fix"
+            },
+            {
+              "id": "gouda",
+              "g": 30,
+              "slot": "sajt"
+            },
+            {
+              "id": "voroshagyma",
+              "g": 15,
+              "slot": "fix"
+            },
+            {
+              "id": "fokhagyma",
+              "g": 3,
+              "slot": "fix"
+            },
+            {
+              "id": "fuszerpaprika",
+              "g": 2,
+              "slot": "fix"
+            }
+          ],
+          "createdAt": "2026-11-24T00:00:00.000Z",
+          "taste": 9.233881737845595
+        },
+        {
+          "id": "lidl48-2026-12-02-2",
+          "templateId": "lecso-csirke",
+          "name": "Kápiás lecsó csirkecombbal és tojással",
+          "cuisine": "magyaros",
+          "method": "Lábas",
+          "time": 30,
+          "mealType": "foetel",
+          "kcalTarget": 675,
+          "items": [
+            {
+              "id": "csirkecomb",
+              "g": 140,
+              "slot": "feh"
+            },
+            {
+              "id": "tojas",
+              "g": 100,
+              "slot": "fix"
+            },
+            {
+              "id": "paprika",
+              "g": 80,
+              "slot": "fix"
+            },
+            {
+              "id": "cukkini",
+              "g": 80,
+              "slot": "zold"
+            },
+            {
+              "id": "paradicsom",
+              "g": 60,
+              "slot": "fix"
+            },
+            {
+              "id": "tejfol",
+              "g": 40,
+              "slot": "extra"
+            },
+            {
+              "id": "bacon",
+              "g": 30,
+              "slot": "fix"
+            },
+            {
+              "id": "voroshagyma",
+              "g": 25,
+              "slot": "fix"
+            },
+            {
+              "id": "vaj",
+              "g": 14,
+              "slot": "zsir"
+            },
+            {
+              "id": "fuszerpaprika",
+              "g": 2,
+              "slot": "fix"
+            }
+          ],
+          "createdAt": "2026-11-24T00:00:00.000Z",
+          "taste": 9.660334346504559
         }
       ]
     }

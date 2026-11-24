@@ -35,6 +35,21 @@ const PLAN = {
     ['lecso-csirke', ['csirkecomb']],
     ['steak', ['csirkecomb', 'kelbimbo', 'brokkoli']],
   ],
+  '2026-11-30': [
+    ['szalonnas-rantotta', ['paprika', 'gouda', 'romai']],
+    ['paprikas', ['csirkecomb', 'karfiol']],
+    ['wok', ['csirkecomb', 'brokkoli', 'paprika']],
+  ],
+  '2026-12-01': [
+    ['omlett', ['gouda', 'koktelparadicsom']],
+    ['csirke-kelbimbo', ['csirkecomb']],
+    ['sutos-csirke', ['csirkecomb', 'paprika', 'mozzarella']],
+  ],
+  '2026-12-02': [
+    ['szalonnas-rantotta', ['cukkini', 'gouda', 'uborka']],
+    ['rakott-csirkes', ['csirkecomb', 'gouda']],
+    ['lecso-csirke', ['csirkecomb', 'cukkini']],
+  ],
 };
 
 const days = {};
@@ -59,9 +74,9 @@ for (const [date, meals] of Object.entries(PLAN)) {
 }
 
 const plan = {
-  lidl48: {
-    title: 'Lidl akciós menü',
-    subtitle: '11.26. csütörtök – 11.29. vasárnap, csirkecomb, szalonna, kelbimbó, brokkoli-karfiol, kápia, cukkini, gouda',
+  'lidl48-7nap': {
+    title: 'Lidl akciós menü, 7 nap',
+    subtitle: '11.26. csütörtök – 12.02. szerda. Vasárnapig vásárolj, a csirkét és a szalonnát adagolva fagyaszd le.',
     days,
   },
 };
