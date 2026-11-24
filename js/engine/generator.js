@@ -1,9 +1,9 @@
 // Receptgenerátor: receptkeretből véletlenszerűen, ízlés szerint súlyozva összeillő alapanyagokat választ,
 // majd az optimalizálóval grammokat számol. Csak PASS receptet ad vissza.
 
-import { TEMPLATES, TEMPLATE_BY_ID } from '../data/templates.js?v=mwuha3nm';
-import { optimize } from './optimizer.js?v=mwuha3nm';
-import { DEFAULT_TARGET } from './macros.js?v=mwuha3nm';
+import { TEMPLATES, TEMPLATE_BY_ID } from '../data/templates.js?v=mwuhn6bx';
+import { optimize } from './optimizer.js?v=mwuhn6bx';
+import { DEFAULT_TARGET } from './macros.js?v=mwuhn6bx';
 
 export function mulberry32(seed) {
   let a = seed >>> 0;

@@ -3529,26 +3529,14 @@ export const TEMPLATES = [
   },
   {
     id: "turos-palacsinta",
-    name: "Túrós lepénykék málnával",
+    name: "Édes túrós omlett málnával",
     cuisine: "klasszikus",
     meals: [
       "reggeli"
     ],
     method: "Serpenyő",
-    time: 25,
+    time: 15,
     slots: [
-      {
-        key: "liszt",
-        label: "Liszt",
-        pick: [
-          1,
-          1
-        ],
-        options: [
-          "zabliszt",
-          "finomliszt"
-        ]
-      },
       {
         key: "zsir",
         label: "Krém",
@@ -3603,24 +3591,14 @@ export const TEMPLATES = [
     ],
     ranges: {
       turo: [
-        80,
-        100,
+        60,
+        90,
         120
       ],
       tojas: [
         100,
-        100,
-        150
-      ],
-      zabliszt: [
-        4,
-        6,
-        8
-      ],
-      finomliszt: [
-        4,
-        6,
-        8
+        150,
+        200
       ],
       vaj: [
         8,
@@ -3668,13 +3646,13 @@ export const TEMPLATES = [
         10
       ]
     },
-    spices: "eritrit vagy stevia, vanília, csipet só, fél tk sütőpor",
+    spices: "eritrit vagy stevia, vanília, csipet só, fahéj",
     steps: [
-      "Botmixerrel turmixold teljesen simára a túrót és a tojásokat. Keverd bele a lisztet ({liszt}), a vaj harmadát megolvasztva, a sütőport, a sót, a vaníliát és az édesítőt, majd pihentesd 10 percig: sűrű, lassan folyó tésztát kapsz.",
-      "Tapadásmentes serpenyőben, alacsony-közepes lángon olvassz fel egy kevés vajat. Evőkanállal tegyél bele 4 kis, kb. 8 cm átmérőjű, ujjnyi vastag lepényt. Nagyobbat ne, mert kevés lisztes tészta csak kis méretben fordítható.",
-      "Fedő alatt süsd 3-4 percig, amíg a teteje matt és a széle megköt, az alja aranybarna. Vékony lapáttal fordítsd meg, a maradék vajon fedő nélkül süsd még 1-2 percig.",
-      "Tálald a krémmel ({zsir}) és a málnával, a málna felét villával nyomd szét szósznak.",
-      "Szórd meg száraz serpenyőben pirított, durvára vágott maggal ({mag}).",
+      "Verd fel habosra a tojásokat egy csipet sóval, édesítővel és vaníliával. Keverd simára a túrót, és forgasd a tojáshoz.",
+      "Tapadásmentes serpenyőben olvaszd meg a vajat közepes-alacsony lángon, öntsd bele a masszát, és fedő alatt 4-5 percig süsd, amíg a teteje majdnem megköt.",
+      "Hajtsd félbe az omlettet, csúsztasd tányérra, és szórd meg fahéjjal.",
+      "Tálald a krémmel ({zsir}) és a málnával.",
+      "Szórd meg pirított magvakkal ({mag}).",
       "Reszelj rá csokoládét ({extra})."
     ]
   },
