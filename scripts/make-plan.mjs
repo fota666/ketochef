@@ -35,15 +35,16 @@ const PLAN = {
     ['lecso-csirke', ['csirkecomb']],
     ['steak', ['csirkecomb', 'kelbimbo', 'brokkoli']],
   ],
+  // Hétfőtől (11.30–12.02) akciós: Trapper sajt (gouda-jellegű, a gouda adataival számolva), habtejszín, zellerszár
   '2026-11-30': [
     ['szalonnas-rantotta', ['paprika', 'gouda', 'romai']],
     ['paprikas', ['csirkecomb', 'karfiol']],
-    ['wok', ['csirkecomb', 'brokkoli', 'paprika']],
+    ['wok', ['csirkecomb', 'brokkoli', 'szarzeller']],
   ],
   '2026-12-01': [
     ['omlett', ['gouda', 'koktelparadicsom']],
+    ['gombas-tejszines', ['csirkecomb']],
     ['csirke-kelbimbo', ['csirkecomb']],
-    ['sutos-csirke', ['csirkecomb', 'paprika', 'mozzarella']],
   ],
   '2026-12-02': [
     ['szalonnas-rantotta', ['cukkini', 'gouda', 'uborka']],
@@ -74,9 +75,9 @@ for (const [date, meals] of Object.entries(PLAN)) {
 }
 
 const plan = {
-  'lidl48-7nap': {
+  'lidl48-v3': {
     title: 'Lidl akciós menü, 7 nap',
-    subtitle: '11.26. csütörtök – 12.02. szerda. Vasárnapig vásárolj, a csirkét és a szalonnát adagolva fagyaszd le.',
+    subtitle: '11.26. csütörtök – 12.02. szerda. Csütörtöktől vasárnapig: csirkecomb, szalonna, zöldség. Hétfőn: Trapper sajt, habtejszín, zellerszár.',
     days,
   },
 };

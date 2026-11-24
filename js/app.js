@@ -1,8 +1,8 @@
-import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuigto0';
-import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuigto0';
-import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuigto0';
-import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuigto0';
-import { PLANS } from './data/plans.js?v=mwuigto0';
+import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuiubvw';
+import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuiubvw';
+import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuiubvw';
+import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuiubvw';
+import { PLANS } from './data/plans.js?v=mwuiubvw';
 
 // ---------- Állapot ----------
 const KEY = 'ketochef.v1';
@@ -818,6 +818,6 @@ document.addEventListener('change', (e) => {
 });
 
 const urlParam = new URLSearchParams(location.search).get('terv');
-const urlPlan = ({ lidl48: 'lidl48-7nap' })[urlParam] || urlParam;
+const urlPlan = ({ lidl48: 'lidl48-v3', 'lidl48-7nap': 'lidl48-v3' })[urlParam] || urlParam;
 if (urlPlan && PLANS[urlPlan] && !(state.loadedPlans || []).includes(urlPlan)) loadPlan(urlPlan);
 route();

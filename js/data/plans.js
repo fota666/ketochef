@@ -1,8 +1,8 @@
 // Generálva: scripts/make-plan.mjs
 export const PLANS = {
-  "lidl48-7nap": {
+  "lidl48-v3": {
     "title": "Lidl akciós menü, 7 nap",
-    "subtitle": "11.26. csütörtök – 12.02. szerda. Vasárnapig vásárolj, a csirkét és a szalonnát adagolva fagyaszd le.",
+    "subtitle": "11.26. csütörtök – 12.02. szerda. Csütörtöktől vasárnapig: csirkecomb, szalonna, zöldség. Hétfőn: Trapper sajt, habtejszín, zellerszár.",
     "days": {
       "2026-11-26": [
         {
@@ -786,16 +786,16 @@ export const PLANS = {
           "items": [
             {
               "id": "csirkecomb",
-              "g": 200,
+              "g": 195,
               "slot": "feh"
             },
             {
               "id": "brokkoli",
-              "g": 80,
+              "g": 110,
               "slot": "zold"
             },
             {
-              "id": "paprika",
+              "id": "szarzeller",
               "g": 60,
               "slot": "zold"
             },
@@ -831,7 +831,7 @@ export const PLANS = {
             },
             {
               "id": "gyomber",
-              "g": 5,
+              "g": 6,
               "slot": "fix"
             },
             {
@@ -841,7 +841,7 @@ export const PLANS = {
             }
           ],
           "createdAt": "2026-11-24T00:00:00.000Z",
-          "taste": 9.055161722218308
+          "taste": 9.064021013772543
         }
       ],
       "2026-12-01": [
@@ -886,6 +886,60 @@ export const PLANS = {
         },
         {
           "id": "lidl48-2026-12-01-1",
+          "templateId": "gombas-tejszines",
+          "name": "Tejszínes-parmezános gombás hús",
+          "cuisine": "olasz",
+          "method": "Serpenyő",
+          "time": 25,
+          "mealType": "foetel",
+          "kcalTarget": 675,
+          "items": [
+            {
+              "id": "csirkecomb",
+              "g": 165,
+              "slot": "feh"
+            },
+            {
+              "id": "gomba",
+              "g": 160,
+              "slot": "fix"
+            },
+            {
+              "id": "cukkini",
+              "g": 130,
+              "slot": "zold"
+            },
+            {
+              "id": "tejszin",
+              "g": 75,
+              "slot": "fix"
+            },
+            {
+              "id": "kremsajt",
+              "g": 30,
+              "slot": "krem"
+            },
+            {
+              "id": "parmezan",
+              "g": 20,
+              "slot": "fix"
+            },
+            {
+              "id": "vaj",
+              "g": 10,
+              "slot": "fix"
+            },
+            {
+              "id": "fokhagyma",
+              "g": 4,
+              "slot": "fix"
+            }
+          ],
+          "createdAt": "2026-11-24T00:00:00.000Z",
+          "taste": 8.981082119827475
+        },
+        {
+          "id": "lidl48-2026-12-01-2",
           "templateId": "csirke-kelbimbo",
           "name": "Serpenyős csirkecomb kelbimbóval és szalonnával",
           "cuisine": "magyaros",
@@ -896,18 +950,13 @@ export const PLANS = {
           "items": [
             {
               "id": "csirkecomb",
-              "g": 150,
+              "g": 155,
               "slot": "feh"
             },
             {
               "id": "kelbimbo",
-              "g": 110,
+              "g": 150,
               "slot": "fix"
-            },
-            {
-              "id": "gomba",
-              "g": 70,
-              "slot": "extra"
             },
             {
               "id": "bacon",
@@ -915,8 +964,8 @@ export const PLANS = {
               "slot": "fix"
             },
             {
-              "id": "vaj",
-              "g": 20,
+              "id": "disznozsir",
+              "g": 16,
               "slot": "zsir"
             },
             {
@@ -931,61 +980,7 @@ export const PLANS = {
             }
           ],
           "createdAt": "2026-11-24T00:00:00.000Z",
-          "taste": 9.928747891058086
-        },
-        {
-          "id": "lidl48-2026-12-01-2",
-          "templateId": "sutos-csirke",
-          "name": "Tepsis csirke sült mediterrán zöldségekkel",
-          "cuisine": "mediterran",
-          "method": "Sütő",
-          "time": 40,
-          "mealType": "foetel",
-          "kcalTarget": 675,
-          "items": [
-            {
-              "id": "csirkecomb",
-              "g": 165,
-              "slot": "feh"
-            },
-            {
-              "id": "brokkoli",
-              "g": 80,
-              "slot": "zold"
-            },
-            {
-              "id": "mozzarella",
-              "g": 70,
-              "slot": "sajt"
-            },
-            {
-              "id": "paprika",
-              "g": 60,
-              "slot": "zold"
-            },
-            {
-              "id": "feketeoliva",
-              "g": 30,
-              "slot": "extra"
-            },
-            {
-              "id": "lilahagyma",
-              "g": 25,
-              "slot": "hagyma"
-            },
-            {
-              "id": "olivaolaj",
-              "g": 24,
-              "slot": "zsir"
-            },
-            {
-              "id": "fokhagyma",
-              "g": 7,
-              "slot": "fix"
-            }
-          ],
-          "createdAt": "2026-11-24T00:00:00.000Z",
-          "taste": 9.379241343309554
+          "taste": 9.474970636773167
         }
       ],
       "2026-12-02": [
