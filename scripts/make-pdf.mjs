@@ -8,6 +8,7 @@ import { pathToFileURL } from 'node:url';
 import { PLANS } from '../js/data/plans.js';
 import { BY_ID, CATEGORIES } from '../js/data/ingredients.js';
 import { validate } from '../js/engine/macros.js';
+import { packFor, PANTRY } from '../js/data/packs.js';
 
 const KEY = process.argv[2] || 'lidl48-v3';
 const OUT = resolve(process.argv[3] || '../ketochef-menu.pdf');
@@ -34,9 +35,10 @@ function shopList(t) {
   t.days.forEach((d) => add(d, () => true));
   (t.also?.days || []).forEach((d) => add(d, (id) => !t.also.except.includes(id)));
   const groups = {};
-  for (const [id, g] of Object.entries(sums)) (groups[BY_ID[id].cat] ||= []).push([id, g]);
+  for (const [id, g] of Object.entries(sums)) (groups[PANTRY.has(id) ? 'kamra' : BY_ID[id].cat] ||= []).push([id, g]);
+  const CATS = { ...CATEGORIES, kamra: 'Kamra, ha nincs otthon' };
   return `<section class="trip"><h2><span style="text-transform:capitalize">${wdOf(t.date)}</span> ${mdOf(t.date)}<small>${esc(t.note || '')}</small></h2><div class="cols">
-  ${Object.keys(CATEGORIES).filter((c) => groups[c]).map((c) => `<div class="grp"><h4>${esc(CATEGORIES[c])}</h4>${groups[c].sort((a, b) => short(a[0]).localeCompare(short(b[0]), 'hu')).map(([id, g]) => `<div class="it"><span>${esc(short(id))}</span><b>${qty(id, g)}</b></div>`).join('')}</div>`).join('')}
+  ${Object.keys(CATS).filter((c) => groups[c]).map((c) => `<div class="grp${c === 'kamra' ? ' pantry' : ''}"><h4>${esc(CATS[c])}</h4>${groups[c].sort((a, b) => short(a[0]).localeCompare(short(b[0]), 'hu')).map(([id, g]) => `<div class="it"><span>${esc(short(id))}</span><b>${packFor(id, g).text}</b></div>`).join('')}</div>`).join('')}
   </div></section>`;
 }
 
@@ -91,6 +93,7 @@ body { font-family: "Segoe UI", Inter, Arial, sans-serif; color: var(--ink); fon
 .grp { break-inside: avoid; margin-bottom: 3.5mm; }
 .grp h4 { font-size: 6.8pt; text-transform: uppercase; letter-spacing: .16em; color: var(--acc); margin-bottom: .8mm; }
 .it { display: flex; justify-content: space-between; gap: 2mm; padding: .6mm 0; border-bottom: 1px solid var(--line); }
+.pantry h4 { color: var(--mute); } .pantry .it { color: var(--mute); }
 .it b { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .it span::first-letter { text-transform: uppercase; }
 .it span::before { content: ""; display: inline-block; width: 2.4mm; height: 2.4mm; border: 1px solid var(--ink); margin-right: 1.8mm; vertical-align: -.3mm; }

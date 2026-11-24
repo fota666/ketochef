@@ -1,8 +1,9 @@
-import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuojif6';
-import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuojif6';
-import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuojif6';
-import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuojif6';
-import { PLANS } from './data/plans.js?v=mwuojif6';
+import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwupjqqr';
+import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwupjqqr';
+import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwupjqqr';
+import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwupjqqr';
+import { PLANS } from './data/plans.js?v=mwupjqqr';
+import { packFor, PANTRY } from './data/packs.js?v=mwupjqqr';
 
 // ---------- Állapot ----------
 const KEY = 'ketochef.v1';
@@ -578,7 +579,8 @@ function viewShop() {
   for (const d of dates) add(d);
   for (const d of trip?.also?.days || []) add(d, (id) => !trip.also.except.includes(id));
   const groups = {};
-  for (const [id, g] of Object.entries(sums)) (groups[db[id]?.cat || 'egyeb'] ||= []).push({ id, g });
+  for (const [id, g] of Object.entries(sums)) (groups[PANTRY.has(id) ? 'kamra' : db[id]?.cat || 'egyeb'] ||= []).push({ id, g });
+  const CATS = { ...CATEGORIES, kamra: 'Kamra, ha nincs otthon' };
   const key = (id) => `${ui.shopRange}:${dates[0]}:${id}`;
   const P = state.people;
   const fmt = (d) => { const x = new Date(d + 'T12:00:00'); return `${x.getMonth() + 1}.${x.getDate()}.`; };
@@ -586,10 +588,10 @@ function viewShop() {
   <div class="seg" style="margin-bottom:8px">${trips.map((t) => `<button data-act="shop-range" data-k="${esc(t.k)}" class="${ui.shopRange === t.k ? 'on' : ''}">${esc(t.label)}</button>`).join('')}${Object.entries(ranges).map(([k, [l]]) => `<button data-act="shop-range" data-k="${k}" class="${ui.shopRange === k ? 'on' : ''}">${l}</button>`).join('')}</div>
   <p class="muted" style="margin:0 0 12px;font-size:14px">${trip ? `${esc(trip.note || '')} ` : ''}${fmt(dates[0])}–${fmt(dates[dates.length - 1])} · Reggeli ${P.reggeli}, ebéd ${P.ebed}, vacsora ${P.vacsora} főre</p>
   ${!meals ? `<div class="empty-state">Üres a menü.</div>` : ''}
-  ${Object.keys(CATEGORIES).filter((c) => groups[c]).map((c) => `<div class="shop-group"><h3>${esc(CATEGORIES[c])}</h3>
+  ${Object.keys(CATS).filter((c) => groups[c]).map((c) => `<div class="shop-group"><h3>${esc(CATS[c])}</h3>
     ${groups[c].sort((a, b) => ingName(a.id).localeCompare(ingName(b.id), 'hu')).map(({ id, g }) => {
       const done = !!state.shopChecked[key(id)];
-      return `<label class="shop-item ${done ? 'done' : ''}"><input type="checkbox" data-act="shop-check" data-k="${esc(key(id))}" ${done ? 'checked' : ''}/><span class="nm">${esc(ingName(id))}</span><span class="q num">${esc(shopQty({ id, g }))}</span></label>`;
+      return `<label class="shop-item ${done ? 'done' : ''}"><input type="checkbox" data-act="shop-check" data-k="${esc(key(id))}" ${done ? 'checked' : ''}/><span class="nm">${esc(ingName(id))}</span><span class="q num">${esc(packFor(id, g).text)}<small class="need">${esc(shopQty({ id, g }))}</small></span></label>`;
     }).join('')}</div>`).join('')}`;
 }
 // Bolti mennyiség: 1 kg felett kg-ban, darabos tételnél felfelé kerekítve

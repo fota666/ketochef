@@ -303,3 +303,14 @@ test('ajánlott menük: minden recept PASS, a napok 1900 kcal ±5%-on belül', a
     }
   }
 });
+
+test('bolti kiszerelés: tojás 10-esével, vaj 250 g, avokádó darabra, minden alapanyagnak van kiszerelése', async () => {
+  const { packFor, PACKS } = await import('../js/data/packs.js');
+  const { INGREDIENTS } = await import('../js/data/ingredients.js');
+  assert.equal(packFor('tojas', 42 * 50).text, '50 db');
+  assert.equal(packFor('vaj', 160).text, '250 g');
+  assert.equal(packFor('avokado', 80).text, '1 db');
+  assert.equal(packFor('gyomber', 30).text, '1 darab');
+  assert.equal(packFor('tejfol', 790).text, '800 g');
+  assert.deepEqual(INGREDIENTS.filter((i) => !PACKS[i.id]).map((i) => i.id), []);
+});
