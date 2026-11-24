@@ -1,7 +1,7 @@
-import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwugi538';
-import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwugi538';
-import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwugi538';
-import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwugi538';
+import { INGREDIENTS, CATEGORIES } from './data/ingredients.js?v=mwuh1pqf';
+import { TEMPLATE_BY_ID, CUISINES } from './data/templates.js?v=mwuh1pqf';
+import { validate, gramTargets, DEFAULT_TARGET, sumNutrition } from './engine/macros.js?v=mwuh1pqf';
+import { generateOptions, generateDay, reoptimize, renderSteps, swapOptions } from './engine/generator.js?v=mwuh1pqf';
 
 // ---------- Állapot ----------
 const KEY = 'ketochef.v1';
